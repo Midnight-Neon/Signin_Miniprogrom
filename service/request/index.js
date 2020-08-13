@@ -5,14 +5,10 @@ const http = new Request();
 http.setConfig((config) => { /* 设置全局配置 */
 	
 	config.baseUrl = ''; // 由于easy-mock网站经常挂掉，就开GitHub代理
-	//#ifndef H5
-	// 由于easy-mock网站经常挂掉，就使用Github的本地数据，在manifest.json中H5开启代理
-	config.baseUrl = 'http://raw.githack.com/AmosHuKe/Watch-Test/master/'; //默认请求地址
-	//#endif
 	
 	//#ifdef MP-WEIXIN
 	//由于微信小程序接口地址需要认证，这里还是采用原easymock地址
-	config.baseUrl = 'http://raw.githack.com/AmosHuKe/Watch-Test/master/mock/'; //默认请求地址
+	config.baseUrl = 'http://localhost:8080/api/'; //默认请求地址
 	//#endif
 	
 	config.header = {

@@ -129,21 +129,14 @@
 				
 				//这里加了个延时，主要是为了让登录动画完整显示出来， 不需要可以删除
 				setTimeout(function(){
-				let res={}
-				res.data={
-	"username": "admin",
-	"password": "admin",
-	"nickname": "AmosHuKe",
-	"accesstoken": "c0a93ef40df7eec23db074266b1ac0e8"
-}
-						console.log(res) 
-						//简单验证下登录（不安全）
-						if(1){
+					this.$http.post('loginbywx',{"ID":this.phoneData,"PassWd":this.passData}).then((res)=>{
+						if(res.data.code==0){
 							let userdata={
-								"username":res.data.username,
-								"nickname":res.data.nickname,
-								"accesstoken":res.data.accesstoken,
-							} //保存用户信息和accesstoken
+								"id":res.data.data.ID,
+								"name":res.data.data.name,
+								"accesstoken":res.data.data.accesstoken,
+								"role":res.data.data.role
+							}
 							_this.$store.dispatch("setUserData",userdata); //存入状态
 							try {
 								uni.setStorageSync('setUserData', userdata); //存入缓存
@@ -169,6 +162,9 @@
 							});
 						}
 						uni.hideLoading();
+					})
+						
+						
 					},2000)
 				
 				
