@@ -57,10 +57,10 @@
 	var _this;
 	import wInput from '../../../components/watch-login/watch-input.vue'; //输入框
 	import wButton from '../../../components/watch-login/watch-button.vue'; //按钮
-	import {
-		getLogin,
-		wexinLogin,
-	} from '../../../service/api/login.js' //登录api
+	// import {
+	// 	getLogin,
+	// 	wexinLogin,
+	// } from '../../../service/api/login.js' //登录api
 	
 	export default {
 		data() {
