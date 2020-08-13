@@ -1,9 +1,6 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
-		    "path" : "pages/class/class",
-		    "style" : {}
-		},{
 			//登陆
 			"path": "pages/mine/children/login",
 			"style": {}
@@ -15,6 +12,9 @@
 			//大布局页
 			"path": "pages/index",
 			"style": {}
+		},{
+		    "path" : "pages/class/class",
+		    "style" : {}
 		},
 		
 		{

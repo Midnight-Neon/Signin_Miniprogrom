@@ -62,7 +62,7 @@
 			        <view class="text-grey text-xs">22:20</view>
  			        <view class="cu-tag round bg-grey sm">5</view>
  
-			  <!-- </view></view>	</template>
+			  </view></view>	</template>
 				<template v-slot:button>
 					<view class="tui-custom-btn_box">
 						<view class="tui-custom-btn tui-custom-mr" @tap="customBtn(0)"><tui-icon name="star" color="#333" :size="20"></tui-icon></view>
