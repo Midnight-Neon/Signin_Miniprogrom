@@ -110,13 +110,7 @@
 </template>
 
 <script>
-	import {
-		getisLogin,
-	} from '../../service/api/login.js' //登录api
-	import {
-		getVersion,
-	} from '../../service/api/version.js' //版本api
-	
+
 	export default {
 		data() {
 			return {
@@ -131,7 +125,6 @@
 		},
 		mounted() {
 			var _this = this
-			getisLogin() //检测登录状态
 			this.uerInfo=this.$store.getters.getUserData
 			if(this.uerInfo!=""){
 				this.login=true

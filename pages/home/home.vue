@@ -29,7 +29,7 @@
 			
 	
 			  <view class="cu-card" :style="[{animation: 'show 0.2s 1'}]">
-			    <view class="cu-item bg-img shadow-blur" style="background:linear-gradient(to right,rgba(85,85,85,.8),transparent),url('https://image.weilanwl.com/color2.0/plugin/sylb2244.jpg')" @click="toChild"  wx:key data-url="/pages/class/class" >
+			    <view class="cu-item bg-img shadow-blur" style="background:linear-gradient(to right,rgba(85,85,85,.6),transparent),url('https://image.weilanwl.com/color2.0/plugin/sylb2244.jpg')" @click="toChild"  wx:key data-url="/pages/class/class" >
 			      <view class="cardTitle">
 			       
 					高等数学
@@ -39,7 +39,7 @@
 				     <view class="cu-tag bg-grey ">
 				       <text class="cuIcon-peoplefill"></text>
 				     </view>
-				     <view class="cu-tag line-grey " style="background-color: rgba(85,85,85,.7);color: white;font-weight: bold;">
+				     <view class="cu-tag line-grey " style="background-color: rgba(85,85,85,.7);color: white;font-weight: bold;border-color: #8799a3;">
 				       刘杰
 				     </view>
 				   </view>
@@ -47,7 +47,7 @@
 				      <view class="cu-tag bg-grey ">
 				        <text class="cuIcon-communityfill"></text>
 				      </view>
-				      <view class="cu-tag line-grey " style="background-color: rgba(85,85,85,.7);color: white;font-weight: bold;">
+				      <view class="cu-tag line-grey " style="background-color: rgba(85,85,85,.7);color: white;font-weight: bold;border-color: #8799a3;">
 				        计算机班
 				      </view>
 				    </view></view>
@@ -55,7 +55,7 @@
 			  </view>
 			  
 			  <view class="cu-card">
-			    <view class="cu-item bg-img shadow-blur" style="background:linear-gradient(to right,rgba(85,85,85,.8),transparent),url('https://images.unsplash.com/photo-1596614780168-c192d7ea4077?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=976&q=80')" @click="toChild('/pages/class/class')"  wx:key>
+			    <view class="cu-item bg-img shadow-blur" style="background:linear-gradient(to right,rgba(85,85,85,.6),transparent),url('https://images.unsplash.com/photo-1596614780168-c192d7ea4077?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=976&q=80')" @click="toChild('/pages/class/class')"  wx:key>
 			      <view class="cardTitle">
 			       
 			  					数据结构
@@ -119,71 +119,33 @@
 </template>
 
 <script>
-	import uCharts from '../../lib/u-charts/u-charts.js'; //统计图
-	import {
-		getSwiper,
-		getRing,
-	} from '../../service/api/home.js'; //首页api
-	import {
-		getisLogin,
-	} from '../../service/api/login.js' //登陆api
+	// import uCharts from '../../lib/u-charts/u-charts.js'; //统计图
+	// import {
+	// 	getSwiper,
+	// 	getRing,
+	// } from '../../service/api/home.js'; //首页api
+	// import {
+	// 	getisLogin,
+	// } from '../../service/api/login.js' //登陆api
 	var _this;
 	var canvaRing=null;
    
 	export default {
 		data() {
 			return {
-				swiperList: [], //轮播数据
-				//轮播
-				cardCur: 0,
-				dotStyle: true,
-				towerStart: 0,
-				direction: '',
-				//统计数据
-				ringList:{}, 
-				//环状统计初始化数据
-				cWidth:'',
-				cHeight:'',
-				pixelRatio:1,
-				//总小时公里
-				hour: 5,
-				minute: 20,
-				kilometer: 26,
+				
 				
 			}
 		},
 		mounted() {
 			_this = this;
-			getisLogin() //是否登陆
-			
-			_this.getSwiperData();//获取轮播数据
-			
-			_this.cWidth=uni.upx2px(400);
-			_this.cHeight=uni.upx2px(400);
-			_this.getServerData();//获取统计数据
+		
 			
 		},
 		methods: {toChild(e){
 			uni.navigateTo({url:e})
 		},
-			getSwiperData(){
-				const swiperData=_this.$store.getters.getSwiperData; //获取状态值
-				//判断状态中是否有值
-				if(swiperData!=""){
-					_this.swiperList=swiperData
-				}else{
-					//获取轮播数据
-					getSwiper()
-					.then(res => {
-						console.log(res)
-						_this.swiperList=res.data;
-						_this.$store.dispatch("setSwiperData",res.data); //存入状态
-					}).catch(err => {
-						console.log(err)
-					})
-				}
-				
-			},
+			
 			copyUrl() {
 				uni.setClipboardData({
 					data: 'https://github.com/AmosHuKe/Watch-Test',
@@ -194,135 +156,7 @@
 					}
 				});
 			},
-			getServerData(){
-				var setRingData={series:[]}; //统计图数据装载
-				
-				const ringData=_this.$store.getters.getRingData; //获取状态值
-				if(ringData!=""){
-					_this.ringList=ringData; //赋值统计数据
-					for(let i=0;i<ringData.length;i++){
-						//统计图数据装载
-						setRingData.series.push({"name":ringData[i].name,"data":ringData[i].data})
-					}
-					_this.showRing("canvasRing",setRingData);
-				}else{
-					//获取统计数据
-					getRing()
-					.then(res => {
-						console.log(res)
-						const data=res.data; //获取统计数据
-						_this.ringList=data; //赋值统计数据
-						_this.$store.dispatch("setRingData",data); //存入状态
-						for(let i=0;i<data.length;i++){
-							//统计图数据装载
-							setRingData.series.push({"name":data[i].name,"data":data[i].data})
-						}
-						_this.showRing("canvasRing",setRingData);
-						//console.log(ringData)
-					}).catch(err => {
-						
-					})
-				}
-				
-				
-			},
-			showRing(canvasId,chartData){
-				canvaRing=new uCharts({
-					$this:_this,
-					canvasId: canvasId,
-					type: 'ring',
-					fontSize:11,
-					legend:false, //底部tag
-					// title: {
-					// 	name: '',
-					// 	color: '#7cb5ec',
-					// 	fontSize: 25*_this.pixelRatio,
-					// 	offsetY:-20*_this.pixelRatio,
-					// },
-					subtitle: {
-						name: '',
-						color: '#666666',
-						fontSize: 1*_this.pixelRatio,
-						offsetY:2*_this.pixelRatio,
-					},
-					extra: {
-						pie: {
-						  offsetAngle: -45,
-						  ringWidth: 5*_this.pixelRatio,
-						  lableWidth: 15,
-						}
-					},
-					background:'#FFFFFF',
-					pixelRatio:_this.pixelRatio,
-					series: chartData.series,
-					animation: true,
-					width: _this.cWidth*_this.pixelRatio,
-					height: _this.cHeight*_this.pixelRatio,
-					disablePieStroke: false,
-					dataLabel: true,
-				});
-			},
-			touchRing(e){
-				canvaRing.showToolTip(e, {
-					format: function (item) {
-						return item.name + ':' + item.data 
-					}
-				});
-			},
-			DotStyle(e) {
-				this.dotStyle = e.detail.value
-			},
-			// cardSwiper
-			cardSwiper(e) {
-				this.cardCur = e.detail.current
-			},
-			// towerSwiper
-			// 初始化towerSwiper
-			TowerSwiper(name) {
-				let list = this[name];
-				for (let i = 0; i < list.length; i++) {
-					list[i].zIndex = parseInt(list.length / 2) + 1 - Math.abs(i - parseInt(list.length / 2))
-					list[i].mLeft = i - parseInt(list.length / 2)
-				}
-				this.swiperList = list
-			},
 			
-			// towerSwiper触摸开始
-			TowerStart(e) {
-				this.towerStart = e.touches[0].pageX
-			},
-			 
-			// towerSwiper计算方向
-			TowerMove(e) {
-				this.direction = e.touches[0].pageX - this.towerStart > 0 ? 'right' : 'left'
-			},
-			
-			// towerSwiper计算滚动
-			TowerEnd(e) {
-				let direction = this.direction;
-				let list = this.swiperList;
-				if (direction == 'right') {
-					let mLeft = list[0].mLeft;
-					let zIndex = list[0].zIndex;
-					for (let i = 1; i < this.swiperList.length; i++) {
-						this.swiperList[i - 1].mLeft = this.swiperList[i].mLeft
-						this.swiperList[i - 1].zIndex = this.swiperList[i].zIndex
-					}
-					this.swiperList[list.length - 1].mLeft = mLeft;
-					this.swiperList[list.length - 1].zIndex = zIndex;
-				} else {
-					let mLeft = list[list.length - 1].mLeft;
-					let zIndex = list[list.length - 1].zIndex;
-					for (let i = this.swiperList.length - 1; i > 0; i--) {
-						this.swiperList[i].mLeft = this.swiperList[i - 1].mLeft
-						this.swiperList[i].zIndex = this.swiperList[i - 1].zIndex
-					}
-					this.swiperList[0].mLeft = mLeft;
-					this.swiperList[0].zIndex = zIndex;
-				}
-				this.direction = ""
-				this.swiperList = this.swiperList
-			},
 		}
 	}
 </script>
