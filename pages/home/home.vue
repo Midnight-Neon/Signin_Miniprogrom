@@ -1,4 +1,4 @@
-<template>
+=<template>
 	<view class="home animation-fade">
 		<scroll-view scroll-y class="page">
 			<view class="tui-header">
@@ -28,11 +28,11 @@
 			</swiper> -->
 			
 	
-			  <view class="cu-card" :style="[{animation: 'show 0.2s 1'}]">
-			    <view class="cu-item bg-img shadow-blur" style="background:linear-gradient(to right,rgba(85,85,85,.6),transparent),url('https://image.weilanwl.com/color2.0/plugin/sylb2244.jpg')" @click="toChild"  wx:key data-url="/pages/class/class" >
+			  <view class="cu-card" :style="[{animation: 'show 0.2s 1'}]" v-for="item in classlist">
+			    <view class="cu-item bg-img shadow-blur" style="background:linear-gradient(to right,rgba(85,85,85,.6),transparent),url('https://image.weilanwl.com/color2.0/plugin/sylb2244.jpg')" @click="toChild('/pages/class/class?cid='+item['_id'])"  wx:key data-url="/pages/class/class" >
 			      <view class="cardTitle">
 			       
-					高等数学
+					{{item.title}}
 			      </view>
 				  <view class="tui-default tui-flex" style="margin-left: -20rpx; position: absolute;bottom: 15rpx;right: 15rpx;">
 				  <view class="cu-capsule radius" >
@@ -40,7 +40,7 @@
 				       <text class="cuIcon-peoplefill"></text>
 				     </view>
 				     <view class="cu-tag line-grey " style="background-color: rgba(85,85,85,.7);color: white;font-weight: bold;border-color: #8799a3;">
-				       刘杰
+				       {{item.teacher.map(v=>{return v['name']}).join('/')}}
 				     </view>
 				   </view>
 				   <view class="cu-capsule radius" >
@@ -48,7 +48,7 @@
 				        <text class="cuIcon-communityfill"></text>
 				      </view>
 				      <view class="cu-tag line-grey " style="background-color: rgba(85,85,85,.7);color: white;font-weight: bold;border-color: #8799a3;">
-				        计算机班
+				        {{item.group?item.group:user.class}}
 				      </view>
 				    </view></view>
 			    </view>
@@ -133,17 +133,26 @@
 	export default {
 		data() {
 			return {
-				
+				classlist:[],
+				user:{}
 				
 			}
 		},
 		mounted() {
 			_this = this;
+			getclasslist();
+			this.user=this.$store.getters.getUserData;
 		
 			
 		},
 		methods: {toChild(e){
 			uni.navigateTo({url:e})
+		},getclasslist(){
+			this.$http.get("courses").then((res)=>{
+				if(res.data.code==0){
+				this.classlist=res.data.data
+				}
+			})
 		},
 			
 			copyUrl() {

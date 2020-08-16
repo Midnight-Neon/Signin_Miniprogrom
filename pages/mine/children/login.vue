@@ -129,12 +129,12 @@
 				
 				//这里加了个延时，主要是为了让登录动画完整显示出来， 不需要可以删除
 				setTimeout(function(){
-					this.$http.post('loginbywx',{"ID":this.phoneData,"PassWd":this.passData}).then((res)=>{
+					_this.$http.post('login',{ID:_this.phoneData,PassWd:_this.passData}).then((res)=>{
 						if(res.data.code==0){
 							let userdata={
 								"id":res.data.data.ID,
 								"name":res.data.data.name,
-								"accesstoken":res.data.data.accesstoken,
+								"access_token":res.data.data.access_token,
 								"role":res.data.data.role
 							}
 							_this.$store.dispatch("setUserData",userdata); //存入状态
@@ -158,7 +158,7 @@
 							uni.showToast({
 								icon: 'error',
 								position: 'bottom',
-								title: '账号或密码错误，账号admin密码admin'
+								title: '账号或密码错误'
 							});
 						}
 						uni.hideLoading();

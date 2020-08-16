@@ -16,7 +16,7 @@
 			</view> -->
 			<view class="action text-gray add-action" @click="NavChange" data-cur="ble">
 				<button class="cu-btn cuIcon-scan bg-black shadow" @click="NavChange" data-cur="ble"></button>
-				设备
+				扫码
 			</view>
 			<!-- <view class="action" :class="PageCur=='goal'?'text-black':'text-gray'" @click="NavChange" data-cur="goal">
 				<view class="cuIcon-remind">
