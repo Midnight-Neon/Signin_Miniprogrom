@@ -17,7 +17,7 @@
 <!--        Primary-->
 <!--      </a-button>-->
     </template>
-    <a-row type="flex">
+    <a-row type="flex" justify="end">
       <a-statistic title="学生数目" :value="project.pnum" />
       <a-statistic
           title="问答"
@@ -56,25 +56,26 @@
         <a-icon type="clock-circle" />
         签到
       </a-menu-item>
-      <a-menu-item key="homework" @click="$router.push('/project/'+$route.params.id+'/homework')">
+      <a-menu-item key="homework" @click="$router.push('/course/'+$route.params.id+'/homework')">
         <a-icon type="form" />
         作业
       </a-menu-item>
-      <a-menu-item key="notification" @click="$router.push('/project/'+$route.params.id+'/notify')">
+      <a-menu-item key="notification" @click="$router.push('/course/'+$route.params.id+'/notify')">
         <a-icon type="notification" />
         通知
       </a-menu-item>
-      <a-menu-item key="bug" @click="$router.push('/project/'+$route.params.id+'/bug')">
+      <a-menu-item key="bug" @click="$router.push('/course/'+$route.params.id+'/bug')">
         <a-icon type="bars" />
         问答
       </a-menu-item>
-      <a-menu-item key="wiki" @click="$router.push('/project/'+$route.params.id+'/wiki')">
+      <a-menu-item key="wiki" @click="$router.push('/course/'+$route.params.id+'/wiki')">
         <a-icon type="file-text"/>
         资源
       </a-menu-item>
 
     </a-menu>
   </a-page-header>
+  <router-view></router-view>
 </div>
 </template>
 
