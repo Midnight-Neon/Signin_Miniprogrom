@@ -7,23 +7,23 @@
 	 <tui-fab  :bottom="100"  :btnList="list" @click="onClick"></tui-fab>
 		<scroll-view :scroll-y="true" class="page show" style="height: calc(100vh-22rpx);">	
 		<view class="cu-list grid" :class="['col-3']">
-			<view class="cu-item">
-				
+			<view  class="cu-item">
+				<navigator url="../notification/notification">
 				<view :class="['cuIcon-noticefill','text-olive','text-lg']">
 					<view class="cu-tag badge" v-if="badge[0]!=0">
 						<block v-if="item.badge!=1">{{item.badge>99?'99+':item.badge}}</block>
 					</view>
 				</view>
-				<text class="text-bold">通知</text>
+				<text class="text-bold">通知</text></navigator>
 			</view>
 			<view class="cu-item">
-			
+			<navigator url="../homework/homework">
 			<view :class="['cuIcon-formfill','text-blue','text-lg']">
 					<view class="cu-tag badge" v-if="badge[0]!=0">
 						<block v-if="item.badge!=1">{{item.badge>99?'99+':item.badge}}</block>
 					</view>
 				</view>
-				<text class="text-bold">作业</text>
+				<text class="text-bold">作业</text></navigator>
 			</view>
 			
 			<view class="cu-item">

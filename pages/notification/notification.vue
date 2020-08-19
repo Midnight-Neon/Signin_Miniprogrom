@@ -107,6 +107,16 @@
 					}
 					this.list=data
 				})
+			}else{
+				this.$http.get("course/"+this.$store.getters.getcid).then(res=>{
+					let data=res.data.data['notifications'];
+					for (let x of data){ 
+						let result = conv(x.content,'markdown');
+						x['content']=result
+						
+					}
+					this.list=data
+				})
 			}
 		}
 	}

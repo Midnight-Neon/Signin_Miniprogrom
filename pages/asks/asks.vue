@@ -8,20 +8,20 @@
 		<view class="tui-container">
 			<view class="tui-news-view" >
 				<view class="news-item">
-				<tui-list-cell :unlined="true"  :radius='true' >
+				<tui-list-cell :unlined="true"  :radius='true' v-for="item in lists" @click="godetail(item)">
 					<view class="tui-news-flex tui-flex-column" >
 						<view class="tui-news-tbox tui-flex-column tui-flex-between tui-h165 tui-pl-20" >
-							<view class="tui-news-title" >集合是否算作一种数据结构?</view>
+							<view class="tui-news-title" >{{item.title}}</view>
 							<text class="text-cut-2">
-								集合是指具有某种特定性质的具体的或抽象的对象汇总而成的集体。其中，构成集合的这些对象则称为该集合的元素
+								{{item.content}}
 							</text>
 							<view class="tui-sub-box">
 								<view style="display: flex;align-items: center;justify-content:flex-start;vertical-align: baseline;">
-									<view class="cu-avatar radius text-xs sm tui-scale" >李</view><text> 李翔</text>
+									<view class="cu-avatar radius text-xs sm tui-scale" >{{item.owner[0]}}</view><text> {{item.owner}}</text>
 								</view>
 								<!-- <view class="tui-sub-source">{{item.source}}</view> -->
 								<view class="tui-sub-cmt">
-									<view class="cu-capsule radius " style="margin-right: 10rpx;">
+									<view class="cu-capsule radius " style="margin-right: 10rpx;" v-if="item.treply!=0">
 										<view class='cu-tag bg-gradual-pink sm'>
 											<text class='cuIcon-favorfill'></text>
 										</view>
@@ -29,7 +29,7 @@
 											老师答
 										</view>
 									</view>
-									<view>1 回复</view>
+									<view>{{item.reply.length}} 回复</view>
 									
 										<!-- <tui-tag padding="10rpx 24rpx"  :plain="true" shape="circleRight" >老师回复</tui-tag> -->
 								</view>
@@ -98,11 +98,24 @@
 	export default {
 		data() {
 			return {
-				
+				lists:[]
 			}
 		},
 		methods: {
-			
+			onClick(){
+				uni.navigateTo({
+					url:"../newask/newask"
+				})
+			},godetail(item){
+				let urlx="/pages/askdetails/askdetails?aid="+item['_id']
+				uni.navigateTo({
+					url:urlx
+				})
+			}
+		},onShow() {
+			this.$http.get("course/"+this.$store.getters.getcid+"/asks").then(res=>{
+				this.lists=res.data.data
+			})
 		}
 	}
 </script>

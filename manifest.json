@@ -102,7 +102,8 @@
             "postcss" : true,
             "es6" : true
         },
-        "usingComponents" : true
+        "usingComponents" : true,
+        "permission" : {}
     },
     "h5" : {
         "devServer" : {

@@ -9,13 +9,13 @@
 		<view class="tui-news-title">{{ask.title}}</view>
 		<view class="tui-sub-info">
 			<view class="tui-sub-left">
-				<text class="tui-author">{{ask.author}}</text>
-				<text class="">{{ask.time}}</text>
+				<text class="tui-author">{{ask.owner}}</text>
+				<!-- <text class="">{{ask.time}}</text> -->
 			</view>
 			
 		</view>
 		<view class="tui-news-content">
-			<view class="tui-article text-bold"></view>
+			
 {{ask.content}}
 	<!-- 	<view class="tui-operate-box">
 			<tui-tag padding="26rpx 56rpx" :type="isFabulous ? 'primary' : 'gray'" shape="circle" :plain="true" @click="btnFabulous">
@@ -33,11 +33,11 @@
 		<view class="tui-cmt-title">精彩评论</view>
 		<view class="tui-cmtbox">
 			<view class="tui-cmt-cell" v-for="(item, index) in cmtList" :key="index">
-				<text class=" cu-avatar radius sm icnons text-bold">{{item.name[0]}}</text>
+				<text class=" cu-avatar radius sm icnons text-bold">{{item.owner[0]}}</text>
 				<view class="tui-cmt-detail">
 					<view class="tui-header-box">
-						<view class="tui-cmt-nickname">{{ item.name }}</view> <view class="cu-capsule radius " style="margin-left: 10rpx;">
-										<view class='cu-tag bg-gradual-pink sm' v-if="item.role==-1">
+						<view class="tui-cmt-nickname">{{ item.owner }}</view> <view class="cu-capsule radius " style="margin-left: 10rpx;" v-if="item.role==-1">
+										<view class='cu-tag bg-gradual-pink sm' >
 											<text class='cuIcon-favorfill'></text>
 										</view>
 										<view class="cu-tag line-grey sm text-bold">
@@ -50,15 +50,15 @@
 						</view> -->
 					</view>
 					<view class="tui-cmt-content">{{ item.content }}</view>
-					<view class="tui-reply-box" v-if="item.reply.length > 0">
+					<view class="tui-reply-box" v-if="item.replys.length > 0">
 						<tui-list-cell
 							backgroundColor="#f2f2f2"
 							:size="28"
-							v-for="(items, index2) in item.reply"
+							v-for="(items, index2) in item.replys"
 							:key="index2"
-							@tap="cmtReply"
+							
 						>
-							<view class="tui-flex-1 tui-reply-nickname">{{ items.name }}</view>
+							<view class="tui-flex-1 tui-reply-nickname">{{ items.owner }}</view>
 							<view class="tui-flex-1">{{ items.content }}</view>
 						</tui-list-cell>
 						<!-- <tui-list-cell padding="20rpx 30rpx" backgroundColor="#f2f2f2" :size="28" :unlined="true" v-if="item.replayNum > 2" @tap="cmtReply">
@@ -70,7 +70,7 @@
 					</view>
 					<view class="tui-footer">
 						{{ item.time }}
-						<view class="tui-primary tui-ml" hover-class="opcity" :hover-start-time="150" @tap="cmtReply">回复</view>
+						<view class="tui-primary tui-ml" hover-class="opcity" :hover-start-time="150" @tap="cmtReply(index)">回复</view>
 					</view>
 				</view>
 			</view>
@@ -79,7 +79,7 @@
 		<view class="tui-operation">
 			<view class="tui-operation-left tui-col-7"><view class="tui-btn-comment" @tap="btnCmt">发表你的评论...</view></view>
 			<view class="tui-operation-right tui-right-flex tui-col-5">
-				<view class="tui-operation-item" hover-class="tui-opcity" :hover-stay-time="150" @tap="cmtAll">
+				<view class="tui-operation-item" hover-class="tui-opcity" :hover-stay-time="150" >
 					<tui-icon name="message" :size="30" color="#444"></tui-icon>
 					<tui-badge absolute type="white_primary" :scaleRatio="0.7">{{cmtList.length}}</tui-badge>
 				</view>
@@ -93,8 +93,9 @@
 		</view>
 
 		<!--加载loadding-->
-		<tui-loadmore v-if="loadding" :index="3" type="primary"></tui-loadmore>
-		<tui-nomore v-if="!pullUpOn" backgroundColor="#fff" text="没有更多评论"></tui-nomore>
+<!-- 		<tui-loadmore v-if="loadding" :index="3" type="primary"></tui-loadmore>
+ -->		
+ <tui-nomore  backgroundColor="#fff" text="没有更多评论"></tui-nomore>
 		<!--加载loadding-->
 		<view class="tui-safearea-bottom"></view>
 	</view></view></view>
@@ -104,9 +105,8 @@
 export default {
 	data() {
 		return {
-			fabulous: 123,
+			fabulous: 123,aid:'',
 			isFabulous: false,
-			isCollection: false,
 			ask:{
 				title:'集合是否算作一种数据结构?',
 				author:'李翔',
@@ -150,6 +150,16 @@ export default {
 				return isFabulous ? 'agree-fill' : 'agree'
 			}
 		}
+	},onLoad(op) {
+		console.log(op['aid'])
+		this.aid=op['aid']
+		this.$http.get("course/"+this.$store.getters.getcid+"/ask/"+this.aid+"/read")
+	},onShow(op) {
+		console.log(op)
+		this.$http.get("course/"+this.$store.getters.getcid+"/ask/"+this.aid).then(res=>{
+			this.ask=res.data.data
+			this.cmtList=this.ask.reply
+		})
 	},
 	methods: {
 		btnFabulous: function() {
@@ -173,17 +183,14 @@ export default {
 		},
 		btnCmt: function() {
 			uni.navigateTo({
-				url: '../comment/comment'
+				url: '/pages/newask/newask?aid='+this.aid
 			})
 		},
-		cmtAll: function() {
+		
+		cmtReply(item){
+			let id=item
 			uni.navigateTo({
-				url: '../commentList/commentList'
-			})
-		},
-		cmtReply: function() {
-			uni.navigateTo({
-				url: '../commentReply/commentReply'
+				url: '/pages/newask/newask?aid='+this.aid+"&replyto="+item
 			})
 		},
 		btnShare(){
@@ -192,6 +199,7 @@ export default {
 			// #endif
 
 			//#ifdef APP-PLUS
+			
 			plus.share.sendWithSystem(
 				{
 					content: 'ThorUI组件库',
@@ -204,22 +212,19 @@ export default {
 					console.log('分享失败：' + JSON.stringify(e));
 				}
 			);
+			
 			//#endif
 		}
 	},
 	// 页面上拉触底事件的处理函数
 	onReachBottom: function() {
-		if (!this.pullUpOn) return;
+		
 		this.loadding = true
-		if (this.pageIndex == 3) {
-			this.loadding = false;
-			this.pullUpOn = false
-		} else {
-			let arr = JSON.parse(JSON.stringify(this.cmtList));
-			this.cmtList = this.cmtList.concat(arr);
-			this.pageIndex = this.pageIndex + 1;
+		this.$http.get("course/"+this.$store.getters.getcid+"/ask/"+this.aid).then(res=>{
+			this.ask=res.data.data
+			this.cmtList=this.ask.reply
 			this.loadding = false
-		}
+		})
 	}
 }
 </script>

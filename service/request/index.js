@@ -69,7 +69,7 @@ http.interceptor.response((response) => { /* 请求之后拦截器 */
 		uni.removeStorageSync('setUserData');
 		store.commit("set_UserData",{})
 		uni.reLaunch({
-			url: './mine/children/login',
+			url: '/pages/mine/children/login',
 		})
 		return response;
 	}

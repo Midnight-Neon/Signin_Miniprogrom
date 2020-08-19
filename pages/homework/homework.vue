@@ -19,7 +19,18 @@
 					</view>
 				</view>
 			</view> 
-			
+			<view class="cu-card article" v-if="ans['reply']!=undefined">
+			<view class="cu-item shadow">
+				<view class="cu-form-group margin-top" style="display: flex;flex-direction: column;">
+					<tui-rate :current="Math.floor(ans['reply']['rank'])" active="#ff7900" :hollow="true" :disabled="true" :quantity="10" :score="ans['reply']['rank']-Math.floor(ans['reply']['rank'])==0?1:ans['reply']['rank']-Math.floor(ans['reply']['rank'])"></tui-rate>
+					<text>
+						{{ans['reply']['text']}}
+					</text>
+					<view style="align-self: flex-start;">
+						<view class="cu-tag bg-red light sm round">{{ans['reply']['owner']}}</view></view>
+				</view>
+				</view>
+				</view>
 	
 		<view class="cu-card article">
 	<view class="cu-item shadow">
@@ -43,6 +54,7 @@
 			</view>
 			<view class="padding flex flex-direction"><button class="cu-btn bg-red margin-tb-sm lg" @click="submit" :disabled="datas['done']==1">{{datas['done']==1?'不可重复提交':'提交'}}</button></view>
 		</view>
+		
 	</view>
 </template>
 
@@ -85,7 +97,8 @@
 					text:'',
 					pics:[],
 					inperson:false
-				}
+				},
+				console.log(Math.floor(this.ans['reply']['rank']))
 				
 			})
 		// 

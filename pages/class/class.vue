@@ -128,12 +128,12 @@
 				      icon: 'discoverfill',
 				      color: 'purple',
 				      badge: 0,
-				      name: '资源'
+				      name: '资源',url:'/pages/netdisk/netdisk'
 				    }, {
 				      icon: 'commandfill',
 				      color: 'purple',
 				      badge: 0,
-				      name: '问答'
+				      name: '问答',url:'/pages/asks/asks'
 				    },{
       icon: 'formfill',
       color: 'mauve',
@@ -148,19 +148,25 @@
 				 let  url=e['url']
 			  	uni.navigateTo({url:url})
 			  }
-		},onLoad:function(op){
-			console.log(op)
-			this.cid=op['cid']
-			this.$store.commit("set_cid",op['cid'])
-			this.$http.get("course/"+op['cid']).then(res=>{
+		},onShow() {
+			this.$http.get("course/"+this.cid).then(res=>{
 				this.classdata=res.data.data
 				console.log(this.classdata)
+				this.elements=[]
 				if(this.classdata['homework_undone']!=0){
 					this.iconList[5]['badge']=this.iconList[5]['badge']+this.classdata['homework_undone']
 					this.elements.push({
 				name: '作业',
 						color: 'blue',
 						cuIcon: 'formfill',num:this.classdata['homework_undone'],action:'待完成'
+					})
+				}
+				if(this.classdata['homeworkreply'].length!=0){
+					this.iconList[5]['badge']=this.iconList[5]['badge']+this.classdata['homeworkreply'].length
+					this.elements.push({
+				name: '作业',
+						color: 'cyan',
+						cuIcon: 'formfill',num:this.classdata['homeworkreply'].length,action:'被批改'
 					})
 				}
 				if(this.classdata['askreply'].length>0){
@@ -182,6 +188,48 @@
 					})
 				}
 			})
+		},onLoad:function(op){
+			console.log(op)
+			this.cid=op['cid']
+			this.$store.commit("set_cid",op['cid'])
+			// this.$http.get("course/"+op['cid']).then(res=>{
+			// 	this.classdata=res.data.data
+			// 	console.log(this.classdata)
+			// 	if(this.classdata['homework_undone']!=0){
+			// 		this.iconList[5]['badge']=this.iconList[5]['badge']+this.classdata['homework_undone']
+			// 		this.elements.push({
+			// 	name: '作业',
+			// 			color: 'blue',
+			// 			cuIcon: 'formfill',num:this.classdata['homework_undone'],action:'待完成'
+			// 		})
+			// 	}
+			// 	if(this.classdata['homeworkreply'].length!=0){
+			// 		this.iconList[5]['badge']=this.iconList[5]['badge']+this.classdata['homeworkreply'].length
+			// 		this.elements.push({
+			// 	name: '作业',
+			// 			color: 'cyan',
+			// 			cuIcon: 'formfill',num:this.classdata['homeworkreply'].length,action:'被批改'
+			// 		})
+			// 	}
+			// 	if(this.classdata['askreply'].length>0){
+			// 		this.iconList[4]['badge']=this.classdata['askreply'].length
+			// 		this.elements.push({
+						
+			// 			name: '问答',
+			// 			color: 'pink',
+			// 			cuIcon: 'commandfill',num:this.classdata['askreply'].length,action:'被回复',
+			// 		})
+			// 	}
+			// 	if((this.classdata['notifications'].length-this.classdata['notifications_done'].length)>0){
+			// 		this.classdata['notify_unnum']=this.classdata['notifications'].length-this.classdata['notifications_done'].length
+			// 		this.elements.push({
+						
+			// 			name: '通知',
+			// 			color: 'purple',
+			// 			cuIcon: 'messagefill',num:this.classdata['notifications'].length-this.classdata['notifications_done'].length,action:'未读'
+			// 		})
+			// 	}
+			// })
 		}
 	}
 </script>

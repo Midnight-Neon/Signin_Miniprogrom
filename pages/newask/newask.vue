@@ -5,22 +5,22 @@
 										    <view slot="content">问答</view>
 										  </cu-custom>
 										  <view class="container">
-											  <view class="cu-form-group" >
+											  <view class="cu-form-group" v-if="type==0">
 											  	<!-- <view class="title">标题</view> -->
-											  	<input placeholder="输入标题" name="input"></input>
+											  	<input placeholder="输入标题" name="input" v-model="newask.title" ></input>
 											  </view>
 		<view class="tui-cells">
-			<textarea class="tui-textarea" name="desc" :placeholder="iscommnet?'发表你的评论...':'输入内容'" maxlength="500" placeholder-class="tui-phcolor-color" auto-focus />
-			<view class="tui-textarea-counter">0/500</view>
+			<textarea class="tui-textarea" v-model="newask.content" name="desc" :placeholder="iscommnet?'发表你的评论...':'输入内容'" maxlength="500" placeholder-class="tui-phcolor-color" auto-focus />
+			<view class="tui-textarea-counter">{{newask.content.length}}/500</view>
 		</view>
 		<view class="tui-enclosure">
-			<tui-icon margin="0 40rpx 0 0"  name="satisfied" :size="25"></tui-icon>
+		<!-- 	<tui-icon margin="0 40rpx 0 0"  name="satisfied" :size="25"></tui-icon>
 			<tui-icon margin="0 40rpx 0 0" name="picture" :size="25"></tui-icon>
-			<tui-icon name="link" :size="22"></tui-icon>
+			<tui-icon name="link" :size="22"></tui-icon> -->
 		</view>
 		<view class="tui-cmt-btn">
-			<button class="cu-btn bg-red margin-tb-sm lg" style="width: 90vw;">发表</button>
-			<tui-button shape="circle"></tui-button>
+			<button class="cu-btn bg-red margin-tb-sm lg" style="width: 90vw;" @click="submit">发表</button>
+			<!-- <tui-button shape="circle"></tui-button> -->
 		</view>
 	</view></view>
 </template>
@@ -28,9 +28,43 @@
 <script>
 export default {
 	data() {
-		return {};
+		return {
+			newask:{title:'',owner:this.$store.getters.getUserData['name'],uid:this.$store.getters.getUserData['ID'],reply:[],treply:0,role:this.$store.getters.getUserData['role'],content:'',time:''},
+			aid:'',type:0,newcommnet:{owner:this.$store.getters.getUserData['name'],uid:this.$store.getters.getUserData['ID'],replys:[],reply:-1,content:'',time:'',role:this.$store.getters.getUserData['role']}
+		};
 	},
-	methods: {}
+	methods: {
+		submit(){
+			if(this.type==1){
+				this.newcommnet['content']=this.newask['content']
+				this.newcommnet['time']=new Date().toLocaleDateString()
+				this.$http.post("course/"+this.$store.getters.getcid+"/ask/"+this.aid+"/reply",this.newcommnet).then(
+				uni.navigateBack({})
+				)
+				
+			}else{
+				this.newask['time']=new Date().toLocaleDateString()
+				this.$http.post("course/"+this.$store.getters.getcid+"/asks",this.newask).then(
+				uni.navigateBack({})
+				)
+			}
+			
+		}
+	},onLoad(op) {
+		console.log(op['aid'],op['replyto'])
+		if(op['aid']!=undefined){
+			this.type=1;
+			this.aid=op['aid']
+		}
+		if(op['replyto']!=undefined){
+			this.type=1;
+			this.newcommnet.reply=op['replyto']
+		}
+
+if(op['aid']!=undefined){
+			this.type=1;
+			this.aid=op['aid']
+		}	}
 };
 </script>
 

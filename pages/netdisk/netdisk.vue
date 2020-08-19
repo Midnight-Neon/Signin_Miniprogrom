@@ -49,7 +49,7 @@
 	export default {
 		data() {
 			return {
-				showActionSheet:false,
+				showActionSheet:false,cid:'',obj:null,
 				filelist:[
 					{
 						filename:'test.doc',
@@ -94,7 +94,23 @@
 					color: "#fff"
 				}],
 			}
-		},
+		},onShow() {
+			this.cid=this.$store.getters.getcid
+		let AV=this.$AV
+			const query=new AV.Query('files')
+			query.equalTo('cid', this.cid)
+			query.first().then((wiki) => {
+			
+			                console.log(wiki)
+			                this.obj = wiki
+			                this.filelist = wiki ? wiki.get('list') : []
+			                if (!(wiki)) {
+			                    this.obj = new AV.Object('files')
+			                    this.obj.set('list', [])
+			                    this.obj.set('cid', this.cid)
+			                    this.obj.save()
+			                }
+		})},
 		methods: {
 			gettypeicon(item){
 				if(item.filename.includes('.zip')||item.filename.includes('.rar')||item.filename.includes('.7z')||item.filename.includes('.jar')) return 'zip'
@@ -115,10 +131,32 @@
 				let index = e.index
 				
 				switch (index) {
-					case 0:wx.chooseMessageFile({
-					  count: 10,success (res) {
+					case 1:wx.chooseMessageFile({
+					  count: 1,success (res) {
     // tempFilePath可以作为img标签的src属性显示图片
-    const tempFilePaths = res.tempFiles
+    const file = res.tempFiles[0]
+	uni.showLoading({
+	    title: '上传中...'
+	});
+	let newfile= new this.$AV.File(file.name,{blob:{uri:file.path}}).save().then((file)=>{
+		let url = file.get('url')
+		 let datas = {
+		                        name: file.name,
+		                        owner: this.$store.getters.getUserData['name'],
+		                        url: url,
+		                        createon: new Date().toLocaleString(),
+		                        size: file.size
+		                    }
+							this.obj.add('list', datas)
+							  this.obj.save().then((obj) => {
+							  this.obj = obj
+							                        this.filelist = obj.get('list')
+													uni.hideLoading()
+							
+							                    })
+	})
+	
+	console.log(res)
   }})
 				
 			}
