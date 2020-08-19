@@ -2,30 +2,30 @@
 	<view>
 		<cu-custom bgColor="bg-gradual-pink" :isBack="true">
 				    <view slot="backText">返回</view>
-				    <view slot="content">数据结构</view>
+				    <view slot="content">{{classdata.title}}</view>
 				  </cu-custom>
 <!-- <scroll-view :scroll-y="true" class="page show" style="height: 100vh;">	 -->
 	 <view class="page show" >
 		  <view class="tui-header" style="margin-left: 10rpx;">
-		  	<view class="tui-title" style="font-size: 42rpx;">数据结构</view>
+		  	<view class="tui-title" style="font-size: 42rpx;">{{classdata.title}}</view>
 		  	<view class="tui-sub-title">
 				<view class="tui-default tui-flex">
 				<view class="cu-capsule radius">
 				   <view class="cu-tag" style="margin-left: 0rpx;padding-left:0 ;">
-				     <text class="cuIcon-peoplefill icnons" style="font-weight: 30rpx;"></text><text style="padding-left: 5rpx;">|  段永祥</text>
+				     <text class="cuIcon-peoplefill icnons" style="font-weight: 30rpx;"></text><text style="padding-left: 5rpx;">|  {{classdata.teacher.map(v=>{return v['name']}).join('/')}}</text>
 				   </view>
 				  
 				 </view>
 				 <view class="cu-capsule radius" >
 				    <view class="cu-tag ">
-				      <text class="cuIcon-communityfill icnons"style="font-weight: 30rpx;"></text><text style="padding-left: 5rpx;"> |  重修班</text>
+				      <text class="cuIcon-communityfill icnons"style="font-weight: 30rpx;"></text><text style="padding-left: 5rpx;"> |  {{classdata.group}}</text>
 				    </view>
 				  
 				  </view> </view>
 			</view>
 		  </view>
 		  <view class="nav-list">
-		  	<navigator hover-class="none" :url="'/pages/basics/' + item.name" class="nav-li" navigateTo :class="'bg-'+item.color"
+		  	<navigator hover-class="none"  class="nav-li" navigateTo :class="'bg-'+item.color"
 		  	 :style="[{animation: 'show ' + ((index+1)*0.2+1) + 's 1'}]" v-for="(item,index) in elements" :key="index">
 		  		<view class="nav-title"><view class="nav-title-first-letter">{{item.num}}</view>条</view>
 		  		<view class="nav-name"><view class="nav-name-action">{{item.action==''?'新':item.action}}</view>{{item.name}}</view>
@@ -33,7 +33,7 @@
 		  	</navigator>
 		  </view>
 		  <view class="cu-list grid col-3 lists" style="background-color: transparent;">
-		    <view class="cu-item" v-for="(item,index) in  iconList" >
+		    <view class="cu-item" v-for="(item,index) in  iconList" @tap="toChild(item)">
 		      <view :class="['cuIcon-'+item.icon,'text-'+item.color]">
 		        <view class="cu-tag badge" v-if="item.badge!=0">
 		          <block :if="item.badge!=1">{{item.badge>99?"99+":item.badge}}</block>
@@ -108,29 +108,7 @@
 <script>
 	export default {
 		data() {
-			return {elements: [{
-						
-						name: '签到',
-						color: 'cyan',num:1,
-						cuIcon: 'timefill',action:''
-					},
-					{
-				
-						name: '作业',
-						color: 'blue',
-						cuIcon: 'formfill',num:1,action:'待完成'
-					},{
-						
-						name: '通知',
-						color: 'purple',
-						cuIcon: 'messagefill',num:1,action:'未读'
-					},
-					{
-						
-						name: '问答',
-						color: 'pink',
-						cuIcon: 'commandfill',num:1,action:'回复',
-					}],
+			return {elements: [],
 				 iconList: [{
 				      icon: 'timefill',
 				      color: 'red',
@@ -140,12 +118,12 @@
 				      icon: 'noticefill',
 				      color: 'olive',
 				      badge: 22,
-				      name: '信息'
+				      name: '信息',url:'/pages/messages/messages'
 				    }, {
 				      icon: 'friendfill',
 				      color: 'cyan',
 				      badge: 0,
-				      name: '班级成员'
+				      name: '班级成员',url:'/pages/class/classmates/classmates'
 				    },  {
 				      icon: 'discoverfill',
 				      color: 'purple',
@@ -160,15 +138,54 @@
       icon: 'formfill',
       color: 'mauve',
       badge: 0,
-      name: '作业'
-    }],modalName:null
+      name: '作业',url:'/pages/notification/notification?type=homework'
+    }],modalName:null,cid:'',classdata:{}
 			}
 		},
 		methods: {
-			  
+			  toChild(e){
+				  console.log('xxxx',e)
+				 let  url=e['url']
+			  	uni.navigateTo({url:url})
+			  }
+		},onLoad:function(op){
+			console.log(op)
+			this.cid=op['cid']
+			this.$store.commit("set_cid",op['cid'])
+			this.$http.get("course/"+op['cid']).then(res=>{
+				this.classdata=res.data.data
+				console.log(this.classdata)
+				if(this.classdata['homework_undone']!=0){
+					this.iconList[5]['badge']=this.iconList[5]['badge']+this.classdata['homework_undone']
+					this.elements.push({
+				name: '作业',
+						color: 'blue',
+						cuIcon: 'formfill',num:this.classdata['homework_undone'],action:'待完成'
+					})
+				}
+				if(this.classdata['askreply'].length>0){
+					this.iconList[4]['badge']=this.classdata['askreply'].length
+					this.elements.push({
+						
+						name: '问答',
+						color: 'pink',
+						cuIcon: 'commandfill',num:this.classdata['askreply'].length,action:'被回复',
+					})
+				}
+				if((this.classdata['notifications'].length-this.classdata['notifications_done'].length)>0){
+					this.classdata['notify_unnum']=this.classdata['notifications'].length-this.classdata['notifications_done'].length
+					this.elements.push({
+						
+						name: '通知',
+						color: 'purple',
+						cuIcon: 'messagefill',num:this.classdata['notifications'].length-this.classdata['notifications_done'].length,action:'未读'
+					})
+				}
+			})
 		}
 	}
 </script>
+
 
 <style>
 	.nav-list {

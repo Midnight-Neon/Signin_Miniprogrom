@@ -2,7 +2,7 @@
 	<view class="home animation-fade">
 		<scroll-view scroll-y class="page">
 			<view class="tui-header">
-				<view class="tui-title">欢迎 李翔同学</view>
+				<view class="tui-title">欢迎 {{user['name']}}同学</view>
 				<view class="tui-sub-title">这里是您的课程列表</view>
 			</view>
 			<!--轮播图 -->
@@ -140,8 +140,9 @@
 		},
 		mounted() {
 			_this = this;
-			getclasslist();
+			this.getclasslist();
 			this.user=this.$store.getters.getUserData;
+			console.log(this.user,1111)
 		
 			
 		},

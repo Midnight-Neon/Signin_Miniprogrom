@@ -32,6 +32,11 @@
 					Vue.prototype.StatusBar = e.statusBarHeight;
 					Vue.prototype.CustomBar = e.statusBarHeight + e.titleBarHeight;
 					// #endif
+					Vue.prototype.$AV.init({
+					                appId: "aeOmDTmS3ffFp58lwSdbf4qs-9Nh9j0Va",
+					                appKey: "PPJz63PgkRHxILOfSnCtRon9",
+					                serverURL: "https://aeomdtms.lc-cn-e1-shared.com"
+					            })
 				}
 			})
 		},

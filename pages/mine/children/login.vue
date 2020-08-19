@@ -86,7 +86,8 @@
 				//判断缓存中是否登录过，直接登录
 				try {
 					const value = uni.getStorageSync('setUserData');
-					if (value) {
+					console.log(value==null)
+					if (value&&value!={}) {
 						//有登录信息
 						console.log("已登录用户：",value);
 						_this.$store.dispatch("setUserData",value); //存入状态

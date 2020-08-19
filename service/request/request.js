@@ -9,7 +9,6 @@ export default class Request {
   config = {
     baseUrl: '',
     header: {
-      'Content-Type': 'application/json;charset=UTF-8'
     },
     method: 'GET',
     dataType: 'json',

@@ -8,12 +8,10 @@ http.setConfig((config) => { /* 设置全局配置 */
 	
 	//#ifdef MP-WEIXIN
 	//由于微信小程序接口地址需要认证，这里还是采用原easymock地址
-	config.baseUrl = 'http://localhost:5000/'; //默认请求地址
+	config.baseUrl = 'http://192.168.124.238:5000/'; //默认请求地址
 	//#endif
 	
-	config.header = {
-        'Content-Type': 'application/json;charset=UTF-8'
-    };
+	
 	return config
 })  
 http.interceptor.request((config, cancel) => { /* 请求之前拦截器 */
@@ -29,11 +27,19 @@ http.interceptor.request((config, cancel) => { /* 请求之前拦截器 */
 	// 	return false;
 	// }
 	// config.url=config.url+".json";
-	if(store.getters.getUserData!=""&&store.getters.getUserData.access_token!=''){
+	console.log(store.getters.getUserData)
+	
+	if(store.getters.getUserData!=""&&store.getters.getUserData['access_token']!=''){
 		config.header={
-			 'Content-Type': 'application/json;charset=UTF-8',
+			 
 			 'Authorization':'Bearer '+store.getters.getUserData.access_token
 		}
+	}
+	if(config.method=="POST"){
+		config.header['Content-Type']='application/json;charset=UTF-8'
+	}
+	else{
+		config.header['Content-Type']='xxx'
 	}
 	if(config.header.service=="weixin"){
 		//更换微信请求地址
@@ -52,12 +58,23 @@ http.interceptor.request((config, cancel) => { /* 请求之前拦截器 */
 http.interceptor.response((response) => { /* 请求之后拦截器 */
 	uni.hideToast();//关闭加载动画
 	console.log("请求后拦截")
-	if(!response.url.includes("login")&&response&&response.data.code!=0){
+	if(!response.config.url.includes("login")&&response&&response.data.code!=0){
 		uni.showToast({
 			icon: 'error',
 			title: '网络错误'
 		});
 	}
+	if(response.statusCode==401||response.statusCode==422){
+		
+		uni.removeStorageSync('setUserData');
+		store.commit("set_UserData",{})
+		uni.reLaunch({
+			url: './mine/children/login',
+		})
+		return response;
+	}
+	console.log(response)
+	
 	return response;
 })
 export {

@@ -2,7 +2,7 @@
 	<view>
 		<cu-custom bgColor="bg-gradual-pink" :isBack="true">
 				    <view slot="backText">返回</view>
-				    <view slot="content">数据结构</view>
+				    <view slot="content">班级成员</view>
 				  </cu-custom>
 		<view class="cu-bar bg-white search fixed" :style="[{top:CustomBar + 'px'}]">
 			<view class="search-form round">
@@ -18,23 +18,24 @@
 		 <view class="indexItem-xx" :id="indexes-xx" :data-index="xx">
 		 	<view class="padding">星标</view>
 		 	<view class="cu-list menu-avatar no-padding">
+				<view class="cu-item" v-for="(items,sub) in xlist" :key="sub">
 							<tui-swipe-action :operateWidth="140">
-											<template v-slot:content>
-		 		<view class="cu-item" v-for="(items,sub) in xlist" :key="sub">
-		 			<view class="cu-avatar round lg">{{items.name[0]}}</view>
-		 			<view class="content">
-		 				<view class="text-grey">{{items.name}}</text></view>
+											<template v-slot:content >
+		 		<view style="display: flex;justify-content: flex-start;align-items: center;flex-direction: row;width: 100vw;">
+		 			<view class="cu-avatar round lg" style="margin-left: 30rpx;">{{items.name[0]}}</view>
+		 			<view style="margin-left:20rpx ;">
+		 				<view class="text-grey" style="font-size: 30rpx;">{{items.name}}</text></view>
 		 				<view class="tui-flex">
 		 <tui-tag margin="20rpx 20rpx 0 0" padding="8rpx" size="24rpx" type="light-green" v-if="items.role==2" >课代表</tui-tag>
 		 <tui-tag margin="20rpx 20rpx 0 0" padding="8rpx" size="24rpx" type="light-orange" v-if="items.role==1">班长</tui-tag>
-		 <tui-tag margin="20rpx 20rpx 0 0" padding="8rpx" size="24rpx" type="black" v-if="items.role==-1">教师</tui-tag>
+		 <tui-tag margin="20rpx 20rpx 0 0" padding="8rpx" size="24rpx" type="black" v-if="items.role==-1||items.role===undefined">教师</tui-tag>
 		  <tui-tag margin="20rpx 20rpx 0 0"  padding="8rpx" size="24rpx" type="btn-gray"  >
 		 {{items.group}}
 		 </tui-tag>
 <text></text>
-		 				</view>
+		 				</view></view>
 		 			</view>
-		 			</view>
+		 			
 					</template>
 												<template v-slot:button>
 													<view class="tui-custom-btn_box">
@@ -42,26 +43,40 @@
 														<view class="tui-custom-btn" @tap="customBtn(1)"><tui-icon name="delete" color="#333" :size="18"></tui-icon></view>
 													</view>
 												</template> 
-											</tui-swipe-action>
+											</tui-swipe-action></view>
 		 		</view></view>
 		 <block v-for="index in list" :key="index">
 		 	<view :class="'indexItem-' + klist[index][0].key" :id="'indexes-' + klist[index][0].key" :data-index="klist[index][0].key">
 		 		<view class="padding">{{klist[index][0].key}}</view>
 		 		<view class="cu-list menu-avatar no-padding">
 		 			<view class="cu-item" v-for="(items,sub) in klist[index]" :key="sub">
-		 				<view class="cu-avatar round lg">{{items.name[0]}}</view>
-		 				<view class="content">
-		 					<view class="text-grey">{{items.name}}</text></view>
-		 					<view class="tui-flex"> <tui-tag margin="20rpx 20rpx 0 0" padding="8rpx" size="24rpx" type="light-green" v-if="items.role==2" >课代表</tui-tag>
-		 <tui-tag margin="20rpx 20rpx 0 0" padding="8rpx" size="24rpx" type="light-orange" v-if="items.role==1">班长</tui-tag>
-		 <tui-tag margin="20rpx 20rpx 0 0" padding="8rpx" size="24rpx" type="black" v-if="items.role==-1">教师</tui-tag>
- <tui-tag margin="20rpx 20rpx 0 0"  padding="8rpx" size="24rpx" type="btn-gray"  >
-		 {{items.group}}
-		 </tui-tag>
-		 					</view>
-		 				</view>
-						</view>
-		 			</view></view>
+		 										<tui-swipe-action :operateWidth="140">
+		 														<template v-slot:content >
+		 					 		<view style="display: flex;justify-content: flex-start;align-items: center;flex-direction: row;width: 100vw;">
+		 					 			<view class="cu-avatar round lg" style="margin-left: 30rpx;">{{items.name[0]}}</view>
+		 					 			<view style="margin-left:20rpx ;">
+		 					 				<view class="text-grey" style="font-size: 30rpx;">{{items.name}}</text></view>
+		 					 				<view class="tui-flex">
+		 					 <tui-tag margin="20rpx 20rpx 0 0" padding="8rpx" size="24rpx" type="light-green" v-if="items.role==2" >课代表</tui-tag>
+		 					 <tui-tag margin="20rpx 20rpx 0 0" padding="8rpx" size="24rpx" type="light-orange" v-if="items.role==1">班长</tui-tag>
+		 					 <tui-tag margin="20rpx 20rpx 0 0" padding="8rpx" size="24rpx" type="black" v-if="items.role==-1||items.role===undefined">教师</tui-tag>
+		 					  <tui-tag margin="20rpx 20rpx 0 0"  padding="8rpx" size="24rpx" type="btn-gray"  >
+		 					 {{items.group}}
+		 					 </tui-tag>
+		 			<text></text>
+		 					 				</view></view>
+		 					 			</view>
+		 					 			
+		 								</template>
+		 															<template v-slot:button>
+		 																<view class="tui-custom-btn_box">
+		 																	<view class="tui-custom-btn tui-custom-mr" @tap="customBtn(0)"><tui-icon name="star" color="#333" :size="20"></tui-icon></view>
+		 																	<view class="tui-custom-btn" @tap="customBtn(1)"><tui-icon name="delete" color="#333" :size="18"></tui-icon></view>
+		 																</view>
+		 															</template> 
+		 														</tui-swipe-action>
+						
+		 			</view></view></view>
 					</block>
 		 </scroll-view>
 		 <view class="indexBar" :style="[{height:'calc(100vh - ' + CustomBar + 'px - 120rpx)'}]">
@@ -156,27 +171,31 @@
 				}
 			}
 		},onLoad() {
-			this.zhToPinYin = new ZhToPinYin(true);
-			
-			for(let per of this.plist){
-				if(per.role!=0){
-					this.xlist.push(per)
+			this.$http.get("course/"+this.$store.getters.getcid+"/plist").then(res=>{
+				this.plist=res.data.data
+				this.zhToPinYin = new ZhToPinYin(true);
+				
+				for(let per of this.plist){
+					if(per.role===undefined||per.role!=0){
+						this.xlist.push(per)
+					}
+					per.key=this.zhToPinYin.getInitials(per.name)[0]
+					// console.log(this.klist[per.key],per.key)
+					if(this.klist[per.key]!=undefined){
+						this.klist[per.key].push(per)
+					}else{
+						this.klist[per.key]=[]
+						console.log(this.klist[per.key],per.key)
+						this.klist[per.key].push(per)
+						console.log(this.klist[per.key],per.key)
+						
+					}
 				}
-				per.key=this.zhToPinYin.getInitials(per.name)[0]
-				// console.log(this.klist[per.key],per.key)
-				if(this.klist[per.key]!=undefined){
-					this.klist[per.key].push(per)
-				}else{
-					this.klist[per.key]=[]
-					console.log(this.klist[per.key],per.key)
-					this.klist[per.key].push(per)
-					console.log(this.klist[per.key],per.key)
-					
-				}
-			}
+				
+				this.list=this.list.concat(Object.keys(this.klist).sort())
+				this.listCur = this.list[0];
+			})
 			
-			this.list=this.list.concat(Object.keys(this.klist).sort())
-			this.listCur = this.list[0];
 			
 		}
 	}
@@ -256,5 +275,59 @@
 		line-height: 100upx;
 		text-align: center;
 		font-size: 48upx;
+	}
+	.cu-list.menu-avatar.cu-item {
+		position: relative;
+		display: -webkit-box;
+		display: -webkit-flex;
+		display: flex;
+		padding-right: 10rpx;
+		height: 140rpx;
+		background-color: #ffffff;
+		-webkit-box-pack: end;
+		-webkit-justify-content: flex-end;
+		        justify-content: flex-end;
+		-webkit-box-align: center;
+		-webkit-align-items: center;
+		        align-items: center
+	}
+	.cu-list.menu-avatar.cu-item.cu-avatar {
+		position: absolute;
+		left: 30rpx
+	}
+	.cu-list.menu-avatar.cu-item .flex .text-cut {
+		max-width: 510rpx
+	}
+	.cu-list.menu-avatar.cu-item .content {
+		position: absolute;
+		left: 146rpx;
+		width: calc(100% - 96rpx - 60rpx - 120rpx - 20rpx);
+		line-height: 1.6em;
+	}
+	.cu-list.menu-avatar.cu-item .content.flex-sub {
+		width: calc(100% - 96rpx - 60rpx - 20rpx);
+	}
+	.cu-list.menu-avatar.cu-item .content>view:first-child {
+		font-size: 30rpx;
+		display: -webkit-box;
+		display: -webkit-flex;
+		display: flex;
+		-webkit-box-align: center;
+		-webkit-align-items: center;
+		        align-items: center
+	}
+	.cu-list.menu-avatar.cu-item .content .cu-tag.sm {
+		display: inline-block;
+		margin-left: 10rpx;
+		height: 28rpx;
+		font-size: 16rpx;
+		line-height: 32rpx
+	}
+	.cu-list.menu-avatar.cu-item .action {
+		width: 100rpx;
+		text-align: center
+	}
+	.cu-list.menu-avatar.cu-item .action view+view {
+		margin-top: 10rpx
 	}
 </style>

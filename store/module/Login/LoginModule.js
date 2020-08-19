@@ -1,7 +1,7 @@
 //Login数据
 const state = {
     userData: '',//用户信息
-	wxCode:''
+	wxCode:'',cid:''
 }
 const mutations = {
     set_UserData(state,UserData) {
@@ -9,6 +9,8 @@ const mutations = {
         state.userData = UserData;
     },set_wxCode(state,wxCode) {
 		state.wxCode=wxCode
+	},set_cid(state,cid) {
+		state.cid=cid
 	}
 
 } 
@@ -28,6 +30,8 @@ const getters = {
         return state.userData;
     },getwxCode(state){
 		return state.wxCode
+	},getcid(state){
+		return state.cid
 	}
 
 }

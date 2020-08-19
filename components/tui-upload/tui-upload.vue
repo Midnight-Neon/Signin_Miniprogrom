@@ -53,6 +53,9 @@
 			fileKeyName: {
 				type: String,
 				default: "file"
+			},AV:{
+				type:Object,
+				default:null
 			},
 			//HTTP 请求 Header, header 中不能设置 Referer。
 			header:{
@@ -150,7 +153,8 @@
 						for (let j = 0; j < imageArr.length; j++) {
 							let index = start + j
 							//服务器地址
-							if (_this.serverUrl) {
+							console.log(_this.AV,_this.$AV)
+							if (_this.$AV!=null) {
 								_this.uploadImage(index, imageArr[j]).then(() => {
 									_this.change()
 								}).catch(() => {
@@ -167,38 +171,56 @@
 			},
 			uploadImage: function(index, url) {
 				let _this = this;
-				return new Promise((resolve, reject) => {
-					uni.uploadFile({
-						url: this.serverUrl,
-						name: this.fileKeyName,
-						header: this.header,
-						formData: this.formData,
-						filePath: url,
-						success: function(res) {
-							console.log(res)
-							if (res.statusCode == 200) {
-								//返回结果 此处需要按接口实际返回进行修改
-								let d = JSON.parse(res.data.replace(/\ufeff/g, "") || "{}")
-								//判断code，以实际接口规范判断
-								if (d.code % 100 === 0) {
-									// 上传成功 d.url 为上传后图片地址，以实际接口返回为准
-									d.url && (_this.imageList[index] = d.url)
-									_this.$set(_this.statusArr, index, d.url ? "1" : "3")
-								} else {
-									// 上传失败
-									_this.$set(_this.statusArr, index, "3")
-								}
-								resolve(index)
-							} else {
-								_this.$set(_this.statusArr, index, "3")
-								reject(index)
-							}
-						},
-						fail: function(res) {
-							_this.$set(_this.statusArr, index, "3")
-							reject(index)
-						}
-					})
+				let filename=url.substr(url.lastIndexOf("/")+1)
+				let file=new _this.$AV.File(filename,{blob: {
+        uri: url,
+      }})
+	  console.log(_this.$AV,file,filename,url)
+	  return new Promise((resolve, reject) => {
+		  
+		  file.save().then((file)=>{
+		  let x=file.get('url')
+		  
+		  console.log(x)
+		  _this.imageList[index] =x
+		  _this.$set(_this.statusArr, index, x ? "1" : "3")
+		  resolve(index)
+	  }, (error) => {
+		  _this.$set(_this.statusArr, index, "3")
+		  reject(index)
+	  })
+				
+				// 	uni.uploadFile({
+				// 		url: this.serverUrl,
+				// 		name: this.fileKeyName,
+				// 		header: this.header,
+				// 		formData: this.formData,
+				// 		filePath: url,
+				// 		success: function(res) {
+				// 			console.log(res)
+				// 			if (res.statusCode == 200) {
+				// 				//返回结果 此处需要按接口实际返回进行修改
+				// 				let d = JSON.parse(res.data.replace(/\ufeff/g, "") || "{}")
+				// 				//判断code，以实际接口规范判断
+				// 				if (d.code % 100 === 0) {
+				// 					// 上传成功 d.url 为上传后图片地址，以实际接口返回为准
+				// 					d.url && (_this.imageList[index] = d.url)
+				// 					_this.$set(_this.statusArr, index, d.url ? "1" : "3")
+				// 				} else {
+				// 					// 上传失败
+				// 					_this.$set(_this.statusArr, index, "3")
+				// 				}
+				// 				resolve(index)
+				// 			} else {
+				// 				_this.$set(_this.statusArr, index, "3")
+				// 				reject(index)
+				// 			}
+				// 		},
+				// 		fail: function(res) {
+				// 			_this.$set(_this.statusArr, index, "3")
+				// 			reject(index)
+				// 		}
+				// 	})
 				})
 
 			},

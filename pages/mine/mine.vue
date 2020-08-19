@@ -84,7 +84,7 @@
 		</view>
 		
 		<!-- 检测版本 -->
-		<view class="cu-modal" :class="versionShow?'show':''">
+	<!-- 	<view class="cu-modal" :class="versionShow?'show':''">
 			<view class="cu-dialog">
 				<view class="cu-bar bg-white justify-end">
 					<view class="content">有新版本更新</view>
@@ -103,7 +103,7 @@
 					</view>
 				</view>
 			</view>
-		</view>
+		</view> -->
 		
 		
 	</view>
@@ -160,7 +160,7 @@
 					} catch (e) {
 						// error
 					}
-					getisLogin() //检测登录状态
+					// getisLogin() //检测登录状态
 					console.log("退出登录")
 					_this.loginOutShow=false
 				}else{
