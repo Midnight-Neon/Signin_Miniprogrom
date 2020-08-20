@@ -3,7 +3,7 @@
 		<cu-custom bgColor="bg-gradual-pink" :isBack="true"><block slot="backText">返回</block><block slot="content">聊天</block></cu-custom>
 		<view class="cu-chat" >
 			<block v-for="item in mes">
-			<view class="cu-item self" v-if="item.me==true">
+			<view class="cu-item self" v-if="item['sender']!=uid">
 				<view class="main">
 					<view class="content bg-green shadow">
 						<text>{{item.msg}}</text>
@@ -31,11 +31,11 @@
 				<text class="cuIcon-sound text-grey"></text>
 			</view> -->
 			<input class="solid-bottom  shadow-blur" style="background-color: #f1f1f1;" :adjust-position="false" :focus="false" maxlength="300" cursor-spacing="10"
-			 @focus="InputFocus" @blur="InputBlur"></input>
+			 @focus="InputFocus" @blur="InputBlur" v-model="newmes.msg"></input>
 		<!-- 	<view class="action">
 				<text class="cuIcon-emojifill text-grey"></text>
 			</view> -->
-			<button class="cu-btn bg-green shadow">发送</button>
+			<button class="cu-btn bg-green shadow" @click="send">发送</button>
 		</view>
 
 	</view></view>
@@ -45,22 +45,20 @@
 	export default {
 		data() {
 			return {
-				InputBottom: 0,
+				InputBottom: 0,uid:'',newmes:{
+					name:this.$store.getters.getUserData['name'],
+					msg:'',time:'',sender:this.$store.getters.getUserData['id'],read:0
+				},
 				mes:[
-					{
-						name:'李翔',
-						msg:'你好',
-						time:'2020年8月23日 13:23',
-						me:true
-					},
-					{
-						name:'张羽嘉',
-						msg:'你好',
-						time:'2020年8月23日 14:23',
-						me:false
-					}
+					
 				]
 			};
+		},onLoad(op) {
+			console.log(op['uid'])
+			this.uid=op['uid']
+			this.refresh()
+		},onShow() {
+		this.refresh()	
 		},
 		methods: {
 			InputFocus(e) {
@@ -68,6 +66,33 @@
 			},
 			InputBlur(e) {
 				this.InputBottom = 0
+			},refresh(){
+				this.$http.get("course/"+this.$store.getters.getcid+"/chat/"+this.uid).then(res=>{
+					let data=res.data.data
+					if(data!=null){
+this.mes=data['chats']						
+					}
+					
+				})
+			},send(){
+				let x=this.newmes
+				x['sender']=this.$store.getters.getUserData['id']
+				console.log(x)
+				x['time']=new Date().toLocaleTimeString()
+				if(this.mes.length==0){
+					x['new']=true
+				}else{
+					x['new']=false
+					
+				}
+				
+				this.$http.post("course/"+this.$store.getters.getcid+"/chat/"+this.uid,x).then(res=>{
+					this.newmes={
+					name:this.$store.getters.getUserData['name'],
+					msg:'',time:'',sender:this.$store.getters.getUserData['id'],read:0
+				},
+					this.refresh()
+				})
 			}
 		}
 	}

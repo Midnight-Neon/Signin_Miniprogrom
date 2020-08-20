@@ -39,8 +39,8 @@
 					</template>
 												<template v-slot:button>
 													<view class="tui-custom-btn_box">
-														<view class="tui-custom-btn tui-custom-mr" @tap="customBtn(0)"><tui-icon name="star" color="#333" :size="20"></tui-icon></view>
-														<view class="tui-custom-btn" @tap="customBtn(1)"><tui-icon name="delete" color="#333" :size="18"></tui-icon></view>
+														<view class="tui-custom-btn tui-custom-mr" @tap="customBtn" :data-url="items.ID"><tui-icon name="addmessage" color="#333" :size="20"></tui-icon></view>
+														<!-- <view class="tui-custom-btn" @tap="customBtn(1)"><tui-icon name="delete" color="#333" :size="18"></tui-icon></view> -->
 													</view>
 												</template> 
 											</tui-swipe-action></view>
@@ -70,9 +70,9 @@
 		 								</template>
 		 															<template v-slot:button>
 		 																<view class="tui-custom-btn_box">
-		 																	<view class="tui-custom-btn tui-custom-mr" @tap="customBtn(0)"><tui-icon name="star" color="#333" :size="20"></tui-icon></view>
-		 																	<view class="tui-custom-btn" @tap="customBtn(1)"><tui-icon name="delete" color="#333" :size="18"></tui-icon></view>
-		 																</view>
+		 																	<view class="tui-custom-btn tui-custom-mr" @tap="customBtn" :data-url="items.ID"><tui-icon name="addmessage" color="#333" :size="20"></tui-icon></view>
+<!-- 		 																	<view class="tui-custom-btn" @tap="customBtn(1)"><tui-icon name="delete" color="#333" :size="18"></tui-icon></view>
+ -->		 																</view>
 		 															</template> 
 		 														</tui-swipe-action>
 						
@@ -126,7 +126,13 @@
 				that.barTop = res.top
 			}).exec()
 		},
-		methods: {
+		methods: {customBtn(event){
+		let id=event.currentTarget.dataset['url']
+			uni.navigateTo({
+				url:"/pages/chat/chat?uid="+id
+			})
+			
+		},
 			getCur(e) {
 				this.hidden = false;
 				this.listCur = this.list[e.target.id];

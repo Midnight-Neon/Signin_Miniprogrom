@@ -6,7 +6,7 @@
 						  </cu-custom>
 						  
 						  <!-- <scroll-view :scroll-y="true" class="page show"  > -->	
-						  <tui-card v-for="item in list" style="padding: 80rpx;padding-bottom: 80rpx;" :title="{text: item.owner}" :tag="{text: item.startat}" :header="{bgcolor: '#f9f9f9',line: true}">
+						  <tui-card v-for="item in list" style="padding: 80rpx;padding-bottom: 80rpx;" :title="{text: item.owner}" :tag="{text: item.startat}" :header="{bgcolor: '#f9f9f9',line: true}" @click="toChild"  :data-url="item['_id']">
 							  <template v-slot:image>
 								  <view class="cu-avatar radius sm">
 									  {{item.owner[0]}}
@@ -15,8 +15,11 @@
 						  	<template v-slot:body  >
 								
 						  		<view class="tui-default" @click="toChild" :data-url="item['_id']">
-								<p style="font-weight: bold;font-size: 36rpx;text-align:center;margin-bottom: -50rpx;">{{item.title}}</p>
-									 <towxml :nodes="item.content"/></towxml>
+								<p style="font-weight: bold;font-size: 36rpx;text-align:center;">{{item.title}}</p>
+									 <!-- <towxml :nodes="item.content"/></towxml> -->
+									 <text>
+										 {{item.content}}
+									 </text>
 						  		</view>
 						  	</template> 
 						  	<template v-slot:footer>
@@ -73,15 +76,14 @@
 </template>
 
 <script>
-	import towxml from '../../static/towxml/towxml'
-	import conv from '../../static/towxml/index.js'
+
 	export default {
 		data() {
 			return {
 				list:[],type:0,
 			}
 		},components: {
-			towxml
+			
 		},
 		methods: {
 			toChild(item){
@@ -92,6 +94,30 @@
 					uni.navigateTo({
 						url:urlx
 					})
+				}else{
+					let _this=this
+					console.log(item)
+					uni.showModal({
+					    title: '确认通知',
+					    content: '向教师发送已读回执?',
+					    success: function (res) {
+					        if (res.confirm) {
+								_this.$http.get("course/"+_this.$store.getters.getcid+"/notify/"+item.currentTarget.dataset['url']).then(res=>{
+									if(res.data.code==0){
+										uni.showToast({
+																		icon: 'success',
+																		
+																		title: '发送成功'
+																	});
+									}
+								})
+								
+					            console.log('用户点击确定');
+					        } else if (res.cancel) {
+					            console.log('用户点击取消');
+					        }
+					    }
+					});
 				}
 			}
 		},onLoad(op){
@@ -101,8 +127,8 @@
 				this.$http.get("course/"+this.$store.getters.getcid+"/homeworks").then(res=>{
 					let data=res.data.data;
 					for (let x of data){ 
-						let result = conv(x.content.substring(0,100)+"...",'markdown');
-						x['content']=result
+						// let result = conv(x.content.substring(0,100)+"...",'markdown');
+						x['content']=x['content'].replace(/#/g,"").replace(/\*/g,"").replace(/ /g,"").replace(/\n\n/g,"\n").substr(0,50)+"..."
 						
 					}
 					this.list=data
@@ -110,11 +136,7 @@
 			}else{
 				this.$http.get("course/"+this.$store.getters.getcid).then(res=>{
 					let data=res.data.data['notifications'];
-					for (let x of data){ 
-						let result = conv(x.content,'markdown');
-						x['content']=result
-						
-					}
+					
 					this.list=data
 				})
 			}

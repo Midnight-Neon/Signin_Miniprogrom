@@ -22,11 +22,14 @@
 			<view class="cu-card article" v-if="ans['reply']!=undefined">
 			<view class="cu-item shadow">
 				<view class="cu-form-group margin-top" style="display: flex;flex-direction: column;">
+					<view class="tui-rate-container" style="display: flex;justify-content:space-between;">
+						
 					<tui-rate :current="Math.floor(ans['reply']['rank'])" active="#ff7900" :hollow="true" :disabled="true" :quantity="10" :score="ans['reply']['rank']-Math.floor(ans['reply']['rank'])==0?1:ans['reply']['rank']-Math.floor(ans['reply']['rank'])"></tui-rate>
+					<view class="tui-title" style="margin-left: 20rpx;">{{ans['reply']['rank']*10}}分</view></view>
 					<text>
 						{{ans['reply']['text']}}
 					</text>
-					<view style="align-self: flex-start;">
+					<view >
 						<view class="cu-tag bg-red light sm round">{{ans['reply']['owner']}}</view></view>
 				</view>
 				</view>

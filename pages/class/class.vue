@@ -149,6 +149,8 @@
 			  	uni.navigateTo({url:url})
 			  }
 		},onShow() {
+			this.iconList[5]['badge']=0
+			this.iconList[4]['badge']=0
 			this.$http.get("course/"+this.cid).then(res=>{
 				this.classdata=res.data.data
 				console.log(this.classdata)

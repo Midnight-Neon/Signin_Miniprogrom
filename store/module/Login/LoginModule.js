@@ -11,6 +11,8 @@ const mutations = {
 		state.wxCode=wxCode
 	},set_cid(state,cid) {
 		state.cid=cid
+	},set_refresh(state,code){
+		state.userData['access_token']=code
 	}
 
 } 
@@ -22,6 +24,8 @@ const actions = {
         commit("set_UserData", UserData);
     },setwxCode(state,wxCode) {
 		commit("set_wxCode",wxCode)
+	},setrefresh({commit},code) {
+		commit("set_refresh",code)
 	}
 }
 const getters = {

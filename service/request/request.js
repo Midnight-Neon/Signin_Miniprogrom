@@ -64,7 +64,7 @@ export default class Request {
         let statusCode = response.statusCode
         response.config = _config
         response = Request.requestComFun(response)
-        if (statusCode === 200) { // 成功
+        if (statusCode === 200||statusCode === 401||statusCode === 422) { // 成功
           resolve(response)
         } else {
           reject(response)

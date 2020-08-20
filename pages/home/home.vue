@@ -142,7 +142,7 @@
 			_this = this;
 			this.getclasslist();
 			this.user=this.$store.getters.getUserData;
-			console.log(this.user,1111)
+			// console.log(this.user,1111)
 		
 			
 		},
@@ -150,9 +150,12 @@
 			uni.navigateTo({url:e})
 		},getclasslist(){
 			this.$http.get("courses").then((res)=>{
+				console.log("home",res)
 				if(res.data.code==0){
 				this.classlist=res.data.data
 				}
+			}).catch(res=>{
+				console.log("home0",res)
 			})
 		},
 			

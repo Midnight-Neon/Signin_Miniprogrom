@@ -19,10 +19,10 @@
 													<text class="iconfont icon-download " style="font-size: 70rpx;color: #5acc9b;" v-else></text> -->
 													<image :src="'../../static/images/files/'+gettypeicon(item)+'.png'" style="height: 64rpx;width: 64rpx;"></image>
 													<view style="display: flex;flex-direction: column;">
-											  		<text class="text-black text-bold " style="margin-left: 30rpx;line-height: 1em;font-size: 36rpx;">{{item.filename}}</text>
-													<text class="text-gray text-sm" style="margin-left: 30rpx;line-height: 1em;margin-top: 3rpx;">2020-09-1 11:30 段永祥</text>
+											  		<text class="text-black text-bold " style="margin-left: 30rpx;line-height: 1em;font-size: 36rpx;">{{item.name.length>20?item.name.substr(0,20)+'...':item.name}}</text>
+													<text class="text-gray text-sm" style="margin-left: 30rpx;line-height: 1em;margin-top: 3rpx;">{{item.createon}} {{item.owner}}</text>
 													</view>
-													<view @click="showActionSheet=true"><text class="cuIcon-more text-grey"  style="font-size: 40rpx;position: absolute;;right: 20rpx;" @click="showActionSheet=true"></text></view>
+													<view @click="showde(item)"><text class="cuIcon-more text-grey"  style="font-size: 40rpx;position: absolute;;right: 20rpx;" @click="showde(item)"></text></view>
 													
 											  	</view>
 											  </view>
@@ -40,8 +40,8 @@
 											  	</view>
 											  </view> -->
 										  </view> 
-										  <tui-actionsheet :show="showActionSheet" :tips="item.filename" :item-list="[{text:'预览'},{text:'复制链接'},{text:'删除',color:'red'}]" :mask-closable="true" :color="'black'"
-										    @click="itemClick($event,item)" @cancel='showActionSheet=false'></tui-actionsheet>
+										  <tui-actionsheet :show="showActionSheet" :tips="currentfile.name" :item-list="[{text:'预览'},{text:'复制链接'},{text:'删除',color:'red'}]" :mask-closable="true" :color="'black'"
+										    @click="itemClick($event)" @cancel='showActionSheet=false'></tui-actionsheet>
 	</view>
 </template>
 
@@ -49,21 +49,9 @@
 	export default {
 		data() {
 			return {
-				showActionSheet:false,cid:'',obj:null,
+				showActionSheet:false,cid:'',obj:null,currentfile:{},
 				filelist:[
-					{
-						filename:'test.doc',
-					},{
-						filename:'test.mp4',
-					},{
-						filename:'test.zip',
-					},{
-						filename:'test.jpg',
-					},{
-						filename:'test.xls',
-					},{
-						filename:'test.pdf',
-					}
+					
 				],list: [{
 					bgColor: "#16C2C2",
 					//图标/图片地址
@@ -113,24 +101,134 @@
 		})},
 		methods: {
 			gettypeicon(item){
-				if(item.filename.includes('.zip')||item.filename.includes('.rar')||item.filename.includes('.7z')||item.filename.includes('.jar')) return 'zip'
-				if(item.filename.includes('.mp4')||item.filename.includes('.rm')||item.filename.includes('.wmv')) return 'video'
-				if(item.filename.includes('.jpg')||item.filename.includes('.png')||item.filename.includes('.jpeg')||item.filename.includes('.gif')||item.filename.includes('.bmp')) return 'jpg'
-				if(item.filename.includes('.pdf')) return 'pdf'
-				if(item.filename.includes('.doc')||item.filename.includes('.docx')) return 'word'
-				if(item.filename.includes('.xls')||item.filename.includes('.xlsx')) return 'excel'
-				if(item.filename.includes('.ppt')||item.filename.includes('.pptx')) return 'ppt'
+				if(item.name.includes('.zip')||item.name.includes('.rar')||item.name.includes('.7z')||item.name.includes('.jar')) return 'zip'
+				if(item.name.includes('.mp4')||item.name.includes('.rm')||item.name.includes('.wmv')) return 'video'
+				if(item.name.includes('.jpg')||item.name.includes('.png')||item.name.includes('.jpeg')||item.name.includes('.gif')||item.name.includes('.bmp')) return 'jpg'
+				if(item.name.includes('.pdf')) return 'pdf'
+				if(item.name.includes('.doc')||item.name.includes('.docx')) return 'word'
+				if(item.name.includes('.xls')||item.name.includes('.xlsx')) return 'excel'
+				if(item.name.includes('.ppt')||item.name.includes('.pptx')) return 'ppt'
 				return 'download'
 				
 				
-			},itemClick(e,item){
+			},itemClick(e){
 				let index = e.index;
+				if(index==0){
+					if(this.currentfile.pic==true){
+						let url= this.currentfile.url
+						wx.previewImage({
+							urls:[url]
+						})
+					}else{
+						let filetype='unknown'
+						if(this.currentfile.name.endsWith('.pdf')) filetype='pdf'
+						if(this.currentfile.name.endsWith('.doc')) filetype='doc'
+						if(this.currentfile.name.endsWith('.docx')) filetype='docx'
+						if(this.currentfile.name.endsWith('.xls')) filetype='xls'
+						if(this.currentfile.name.endsWith('.xlsx')) filetype='xlsx'
+						if(this.currentfile.name.endsWith('.ppt')) filetype='ppt'
+						if(this.currentfile.name.endsWith('.pptx')) filetype='pptx'
+						if(filetype!='unknown'){
+							uni.showLoading({
+							    title: '加载中...'
+							});
+							let url= this.currentfile.url
+							wx.downloadFile({url:url,success (res){
+								const filePath = res.tempFilePath
+								wx.openDocument({
+									filePath:filePath,
+									fileType:filetype,success: function (res) {
+        uni.hideLoading()
+      },fail:function (res) {
+        uni.hideLoading()
+		uni.showToast({
+			icon: 'error',
+			title: '预览失败'
+		})
+      },
+								})}
+							})
+						}else{
+							uni.showModal({
+							    title: '提示',
+							    content: '此文件类型无法预览,请复制链接在浏览器打开',
+							    success: function (res) {
+							        if (res.confirm) {
+							            console.log('用户点击确定');
+							        } else if (res.cancel) {
+							            console.log('用户点击取消');
+							        }
+							    }
+							});
+						}
+					}
+				}else{
+					let url= this.currentfile.url
+					uni.showModal({
+					    title: '复制链接',
+					    content: '文件直链:\n'+url,
+					    success: function (res) {
+					        if (res.confirm) {
+								wx.setClipboardData({
+								  data: url,
+								  success (res) {
+								    wx.getClipboardData({
+								      success (res) {
+								        console.log(res.data) // data
+								      }
+								    })
+								  }
+								})
+					            console.log('用户点击确定');
+					        } else if (res.cancel) {
+					            console.log('用户点击取消');
+					        }
+					    }
+					});
+				}
 				
 				this.showActionSheet=false
+			},showde(item){
+				this.currentfile=item
+				this.showActionSheet=true
 			},onClick(e){
 				let index = e.index
-				
+				let _this=this
 				switch (index) {
+					case 0:wx.chooseImage({
+  count: 1,
+  sizeType: ['original', 'compressed'],
+  sourceType: ['album', 'camera'],
+  success (res) {
+    // tempFilePath可以作为img标签的src属性显示图片
+    const tempFilePaths = res.tempFilePaths[0]
+	console.log(tempFilePaths)
+	uni.showLoading({
+	    title: '上传中...'
+	});
+	let filename=tempFilePaths.substr(tempFilePaths.lastIndexOf("/")+1)
+	let newfile= new _this.$AV.File(filename,{blob:{uri:tempFilePaths}}).save().then((fileinfo)=>{
+		let url = fileinfo.get('url')
+		 let datas = {
+		                        name: filename,
+		                        owner: _this.$store.getters.getUserData['name'],
+		                        url: url,
+		                        createon: new Date().toLocaleString(),
+		                        size: '',pic:true
+		                    }
+							_this.obj.add('list', datas)
+							  _this.obj.save().then((obj) => {
+							  _this.obj = obj
+							                        _this.filelist = obj.get('list')
+													uni.hideLoading()
+							
+							                    })
+	})
+	
+	
+  }
+}) 
+break;
 					case 1:wx.chooseMessageFile({
 					  count: 1,success (res) {
     // tempFilePath可以作为img标签的src属性显示图片
@@ -138,19 +236,19 @@
 	uni.showLoading({
 	    title: '上传中...'
 	});
-	let newfile= new this.$AV.File(file.name,{blob:{uri:file.path}}).save().then((file)=>{
-		let url = file.get('url')
+	let newfile= new _this.$AV.File(file.name,{blob:{uri:file.path}}).save().then((fileinfo)=>{
+		let url = fileinfo.get('url')
 		 let datas = {
 		                        name: file.name,
-		                        owner: this.$store.getters.getUserData['name'],
+		                        owner: _this.$store.getters.getUserData['name'],
 		                        url: url,
 		                        createon: new Date().toLocaleString(),
 		                        size: file.size
 		                    }
-							this.obj.add('list', datas)
-							  this.obj.save().then((obj) => {
-							  this.obj = obj
-							                        this.filelist = obj.get('list')
+							_this.obj.add('list', datas)
+							  _this.obj.save().then((obj) => {
+							  _this.obj = obj
+							                        _this.filelist = obj.get('list')
 													uni.hideLoading()
 							
 							                    })

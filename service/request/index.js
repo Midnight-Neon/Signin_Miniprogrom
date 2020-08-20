@@ -29,7 +29,7 @@ http.interceptor.request((config, cancel) => { /* 请求之前拦截器 */
 	// config.url=config.url+".json";
 	console.log(store.getters.getUserData)
 	
-	if(store.getters.getUserData!=""&&store.getters.getUserData['access_token']!=''){
+	if(!config.url.includes("refresh")&&store.getters.getUserData!=""&&store.getters.getUserData['access_token']!=''){
 		config.header={
 			 
 			 'Authorization':'Bearer '+store.getters.getUserData.access_token
@@ -55,7 +55,7 @@ http.interceptor.request((config, cancel) => { /* 请求之前拦截器 */
 	console.log("请求前拦截")
 	return config;
 })
-http.interceptor.response((response) => { /* 请求之后拦截器 */
+http.interceptor.response(async (response) => { /* 请求之后拦截器 */
 	uni.hideToast();//关闭加载动画
 	console.log("请求后拦截")
 	if(!response.config.url.includes("login")&&response&&response.data.code!=0){
@@ -64,19 +64,60 @@ http.interceptor.response((response) => { /* 请求之后拦截器 */
 			title: '网络错误'
 		});
 	}
-	if(response.statusCode==401||response.statusCode==422){
+	if((response.statusCode==401||response.statusCode==422)){
+		if(store.getters.getUserData['refresh_token']&&store.getters.getUserData['refresh_token']!=''){
+			 const res= await http.get("refresh",null,{header: { 'Authorization':'Bearer '+store.getters.getUserData['refresh_token']}})
+				if(res.data['access_token']!=''){
+					store.dispatch("setrefresh",res.data['access_token'])
+					try {
+						uni.setStorageSync('setUserData', store.getters.getUserData); //存入缓存
+					} catch (e) {
+						// error
+					}
+					const config = response.config
+					console.log(config)
+					config.header['Authorization']='Bearer '+res.data['access_token']
+					if(config.url.includes("refresh")){
+						return false
+					}
+					let x=await  new Request().request(config)
+					console.log(x,'xxx')
+					return x
+				}else{
+					uni.removeStorageSync('setUserData');
+							store.commit("set_UserData",{})
+							uni.reLaunch({
+								url: '/pages/mine/children/login',
+							})
+							
+				return response;			
+				}
+				
+			
+		}else{
+			uni.removeStorageSync('setUserData');
+					store.commit("set_UserData",{})
+					uni.reLaunch({
+						url: '/pages/mine/children/login',
+					})
+					return response;
+		}
 		
-		uni.removeStorageSync('setUserData');
-		store.commit("set_UserData",{})
-		uni.reLaunch({
-			url: '/pages/mine/children/login',
-		})
+		
+	}else{
 		return response;
+		
 	}
-	console.log(response)
+	// console.log(response)
 	
-	return response;
+},async (res)=>{
+	console.log("111",res)
+	return res 
 })
+// http.interceptor.response((res)=>{
+// 	console.log("111",res)
+// 	return res
+// })
 export {
 	http
 };

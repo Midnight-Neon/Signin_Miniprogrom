@@ -160,6 +160,10 @@
 					} catch (e) {
 						// error
 					}
+					
+							uni.reLaunch({
+								url: '/pages/mine/children/login',
+							})
 					// getisLogin() //检测登录状态
 					console.log("退出登录")
 					_this.loginOutShow=false

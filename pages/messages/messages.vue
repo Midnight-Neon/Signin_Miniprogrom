@@ -17,7 +17,7 @@
 				<text class="text-bold">通知</text></navigator>
 			</view>
 			<view class="cu-item">
-			<navigator url="../homework/homework">
+			<navigator url="/pages/notification/notification?type=homework">
 			<view :class="['cuIcon-formfill','text-blue','text-lg']">
 					<view class="cu-tag badge" v-if="badge[0]!=0">
 						<block v-if="item.badge!=1">{{item.badge>99?'99+':item.badge}}</block>
@@ -37,11 +37,11 @@
 			</view>
 		</view> 
 		<block v-for="(item,index) in msgList" :key="index">
-			<tui-swipe-action :operateWidth="140">
+			<tui-swipe-action :operateWidth="140" v-if="!blacklists.includes(item['ID'])">
 							<template v-slot:content>
-			<tui-list-cell @click="detail" :unlined="false">
+			<tui-list-cell :unlined="false" >
 				
-				<view class="tui-chat-item">
+				<view class="tui-chat-item" :data-url="item['ID']" @click="detail($event)" >
 					<view class="tui-msg-box">
 						<view class="cu-avatar radius tui-msg-pic" mode="widthFix">{{item.name[0]}}</view>
 						<view class="tui-msg-item">
@@ -83,7 +83,7 @@
 					msgNum: 2,
 					time: "13:27",
 					level: 1
-				}],
+				}],blacklists:[],
 				list: [{
 					bgColor: "#16C2C2",
 					//图标/图片地址
@@ -114,6 +114,27 @@
 					color: "#fff"
 				}],
 			}
+		},onShow() {
+			let blacklist=uni.getStorageSync("blacklists")
+			this.blacklists=blacklist
+			this.$http.get("course/"+this.$store.getters.getcid+"/chats").then(res=>{
+				let lists =res.data.data
+				for (let list of lists){
+					list['msgNum']=list['chats'].filter((v)=>{
+						return v.read==0&&v.sender!=this.$store.getters.getUserData['id']
+					}).length
+					list['msg']=list['chats'].slice(-1)[0]['msg']
+					let xx=list['infos'].filter(v=>{
+						return v.ID!=this.$store.getters.getUserData['id']
+					})[0]
+					list['name']=xx['name']
+					list['ID']=xx['ID']
+					
+				}
+				this.msgList=lists
+				
+				
+			})
 		},
 		methods: {
 customBtn(index,i){
@@ -121,9 +142,28 @@ customBtn(index,i){
 		this.msgList[index].level=this.msgList[index].level==1?2:1
 	}
 	if(i==1){
-		this.msgList.splice(index,1)
+		let blacklist=uni.getStorageSync("blacklists")
+		console.log(blacklist)
+		if(blacklist){
+			blacklist.push(this.msgList.splice(index,1)[0]['ID'])
+		}else{
+			blacklist=[]
+			blacklist.push(this.msgList.splice(index,1)[0]['ID'])
+			
+		}
+		uni.setStorage({
+			key:"blacklists",data:blacklist
+		})
+		
+		
 	}
-}			
+},detail(event){
+	console.log(event)
+			let id=event.currentTarget.dataset['url']
+				uni.navigateTo({
+					url:"/pages/chat/chat?uid="+id
+				})
+		}			
 		},onLoad(){
 			
 		}
