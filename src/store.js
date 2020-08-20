@@ -6,8 +6,7 @@ export default new Vuex.Store({
         info:{
             name:'admin',ID:'',access_token:'',group:'',role:0
         },current:{
-            name:'',
-            group:''
+
         } //当前repo名称
     },getters:{
         islogin:state=>{
@@ -22,6 +21,8 @@ export default new Vuex.Store({
             // state.info.jwt=payload.jwt;
 
 
+        },setcurrent(state, payload){
+            state.current=payload
         }
     }
 })

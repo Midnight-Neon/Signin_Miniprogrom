@@ -86,8 +86,8 @@
       </a-form-model-item>
 
       <a-form-model-item label="内容" prop="content">
-      <mavon-editor style="height: 100%;min-height: 400px;"
-                    v-model="notify.content" ref="md"></mavon-editor>
+        <a-textarea  v-model="notify.content"
+        />
 
       </a-form-model-item>
       <a-form-model-item style="text-align: center"> <a-button type="primary" style=" margin:20px;width: 200px" @click="handleSubmit">
@@ -112,8 +112,7 @@
 </template>
 
 <script>
-import { mavonEditor } from 'mavon-editor'
-import 'mavon-editor/dist/css/index.css'
+
 export default {
 name: "notify",data(){
   return{
@@ -124,7 +123,7 @@ name: "notify",data(){
     this.refresh()
 
   },components: {
-    mavonEditor
+
     // or 'mavon-editor': mavonEditor
   },methods: {
     handleClose(removedTag) {

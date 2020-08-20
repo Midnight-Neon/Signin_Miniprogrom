@@ -12,8 +12,15 @@ Vue.use(axiosPlugin)
 Vue.use(VueRouter)
 Vue.use(Antd)
 Vue.use(Vuex)
+import * as hljs from "highlight.js";
 import store from "@/store";
 import router from "@/router";
 new Vue({
   render: h => h(App),store,router
 }).$mount('#app')
+Vue.directive('highlight',function (el) {
+  let blocks = el.querySelectorAll('pre code');
+  blocks.forEach((block)=>{
+    hljs.highlightBlock(block)
+  })
+})

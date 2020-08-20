@@ -13,7 +13,11 @@ const routes = [
         },children: [
             {
                 path:'notify',
-                component:()=>import('@/components/notify'),name:'通知'
+                component:()=>import('@/components/notify'),name:'notify'
+
+            },{
+                path:'homework',
+                component:()=>import('@/components/homework'),name:'homework'
 
             }
         ] },
