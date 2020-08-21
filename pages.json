@@ -54,7 +54,19 @@
             "path": "pages/netdisk/netdisk",
             "style": {}
         }
-    ],
+        
+    ],"subPackages":[{
+		"root":"pA","pages":[{
+			"path":"camera/camera"
+			
+		}
+		]
+	}],"preloadRule":{
+		"pages/index":{
+			"network":"all",
+			"packages":["pA"]
+		}
+	},
     "globalStyle": {
         "navigationBarTextStyle": "black",
         "navigationBarTitleText": "运动",

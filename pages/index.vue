@@ -47,7 +47,14 @@
 		methods: {
 			NavChange: function(e) {
 				//底部菜单切换
-				this.PageCur = e.currentTarget.dataset.cur
+				if(e.currentTarget.dataset.cur=='ble'){
+					uni.navigateTo({
+						url:"/pA/camera/camera"
+					})
+				}else{
+					this.PageCur = e.currentTarget.dataset.cur
+					
+				}
 			}
 		},
 		watch:{

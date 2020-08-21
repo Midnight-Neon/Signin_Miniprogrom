@@ -8,8 +8,8 @@ Vue.component('cu-custom',cuCustom)
 import home from './pages/home/home.vue'
 Vue.component('home',home)
 //运动
-const AV = require('./static/av-core-min.js');
-const adapters = require('./static/leancloud-adapters-weapp.js');
+const AV = require('./js_sdk/av-core-min.js');
+const adapters = require('./js_sdk/leancloud-adapters-weapp.js');
 AV.setAdapters(adapters);
 //我的
 import mine from './pages/mine/mine.vue'
