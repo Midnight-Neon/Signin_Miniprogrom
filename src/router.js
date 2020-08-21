@@ -19,6 +19,10 @@ const routes = [
                 path:'homework',
                 component:()=>import('@/components/homework'),name:'homework'
 
+            },{
+                path:'check',
+                component:()=>import('@/components/checkin'),name:'check'
+
             }
         ] },
     {

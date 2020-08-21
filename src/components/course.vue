@@ -10,9 +10,9 @@
       <a-button key="3" type="primary" @click="visible=true">
         新作业
       </a-button>
-<!--      <a-button key="2">-->
-<!--        Operation-->
-<!--      </a-button>-->
+      <a-button key="2" @click="checkin">
+        发起签到
+      </a-button>
 <!--      <a-button key="1" type="primary">-->
 <!--        Primary-->
 <!--      </a-button>-->
@@ -52,7 +52,7 @@
       </a-statistic>
     </a-row>
     <a-menu mode="horizontal" slot="footer" style="background-color: transparent" >
-      <a-menu-item key="sign" @click="$router.push('/course/'+$route.params.id+'/sign')">
+      <a-menu-item key="sign" @click="$router.push('/course/'+$route.params.id+'/check')">
         <a-icon type="clock-circle" />
         签到
       </a-menu-item>
@@ -134,6 +134,8 @@
       </template>
     </a-result>
   </a-modal>
+
+
 </div>
 </template>
 
@@ -158,7 +160,7 @@ name: "course",
   },data(){
   return{
     cid:'',project:{},newwork:{title:'',owner:this.$store.state.info.name,content:'',ans:[],startat:'',tag:[]},inputVisible: false,
-        inputValue: '',confirmLoading:false,visible:false,done:false
+        inputValue: '',confirmLoading:false,visible:false,done:false,showcheck:false
   }
   },components: {
     mavonEditor
@@ -174,6 +176,8 @@ this.confirmLoading=false
         this.$message.error('作业提交失败!');
       }
     })
+    },nextstep(){
+
     },
     handleClose(removedTag) {
       const tags = this.newwork.tag.filter(tag => tag !== removedTag);

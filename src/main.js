@@ -12,9 +12,19 @@ Vue.use(axiosPlugin)
 Vue.use(VueRouter)
 Vue.use(Antd)
 Vue.use(Vuex)
+import VueSocketIO from 'vue-socket.io'
 import * as hljs from "highlight.js";
 import store from "@/store";
 import router from "@/router";
+Vue.use(new VueSocketIO({
+  debug: true,
+  connection: 'http://localhost:5000/',
+  vuex: {
+    store,
+    actionPrefix: 'SOCKET_',
+    mutationPrefix: 'SOCKET_'
+  },
+}))
 new Vue({
   render: h => h(App),store,router
 }).$mount('#app')
