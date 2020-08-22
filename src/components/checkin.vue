@@ -1,9 +1,99 @@
 <template>
   <div>
-  <a-card style="margin-top: 24px;text-align: left;margin-left: 24px;margin-right: 24px" :bodyStyle="{paddingBottom:'5px'}" >
-    <a slot="extra" @click="show=true">返回</a>
+  <a-card style="margin-top: 24px;text-align: left;margin-left: 24px;margin-right: 24px" :bodyStyle="{paddingBottom:'5px'}" title="签到列表" v-if="!showd">
+    <a slot="extra" @click="show=true">新增</a>
+    <a-list
+        rowKey="id"
+        itemLayout="vertical"
+        :dataSource="clist"
 
+    >
+      <a-list-item :key="item._id" slot="renderItem" slot-scope="item" >
+        <div slot="actions" style="display: flex;align-items: center;justify-items:start">
+  <span style="display: flex;align-items: center;justify-items:start"><a-avatar
+      shape="square"
+      size="small"
+      :style="{ backgroundColor: color, verticalAlign: 'middle',fontWeight:'bold',marginRight:'6px' }"
+  >
+    {{ item.owner['name'][0] }}
+  </a-avatar ><span style="font-weight: bold;">{{ item.owner['name']}}</span></span>
+          <span style="display: flex;align-items: center;justify-items:start;margin-left: 10px"> <a-icon type="clock-circle" style="margin-right: 6px"/> {{new Date(item.datetime*1000).toLocaleString()}}</span>
+          <span style="margin-left: 10px;">
+                  <a-tag color="orange"  >{{types[item.type-1]}}</a-tag>
+
+              </span>
+        </div>
+        <a-list-item-meta>
+        <a slot="title" @click="detail(item)" style="font-weight: bolder;font-size: 1.2rem;">{{ new Date(item.datetime*1000).toLocaleDateString() }}</a>
+<!--        <template slot="description">-->
+<!--             -->
+<!--        </template>-->
+
+        </a-list-item-meta>
+        <a-row type="flex" justify="end">
+<!--          <a-col :span="14">-->
+<!--            <span style="font-weight: bold;">{{item.content.substring(0,100).replace(/#/g,'').replace(/\s/g,'').replace(/\*/g,'')+'...'}}</span>-->
+<!--          </a-col>-->
+          <a-col :span="5">
+            <a-progress type="circle" :percent="(item['list']?item['list'].length*100:0)/plist.length" style="margin-top: -50px">
+              <template #format="">
+                已签到:
+                <p style="margin-top: 10px">
+                  <span style="font-size: 26px;">{{ item['list']?item['list'].length:0 }}</span>
+                  <span style="font-size: 16px;">/{{plist.length}} </span></p>
+              </template>
+            </a-progress>
+          </a-col>
+        </a-row>
+      </a-list-item>
+    </a-list>
   </a-card>
+    <a-card style="margin-top: 24px;text-align: left;margin-left: 24px;margin-right: 24px" :bodyStyle="{paddingBottom:'5px'}" title="签到详情" v-else>
+      <a slot="extra" @click="showd=false">返回</a>
+      <a-list bordered style="min-width: 400px;margin: 20px" size="small"
+              class="demo-loadmore-list"
+              item-layout="horizontal"
+              :data-source="ncheckedlists" :pagination="{pageSize: 5,}"
+      ><div slot="header">
+        未签到
+      </div>
+
+        <a-list-item slot="renderItem" slot-scope="item" style="align-items: center">
+          <a-list-item-meta style="align-items: center">
+            <a slot="title" style="line-height: 32px">{{ item.name }}</a>
+            <a-avatar
+                slot="avatar"
+
+            >{{item.name[0]}}</a-avatar>
+
+          </a-list-item-meta>
+          <span>{{item['ID']}}</span>
+<!--          <span>{{new Date(item['datetime']).toLocaleTimeString()}}</span>-->
+        </a-list-item>
+      </a-list>
+      <a-list bordered style="min-width: 400px;margin: 20px" size="small"
+              class="demo-loadmore-list"
+              item-layout="horizontal"
+              :data-source="checkedlists" :pagination="{pageSize: 5,}"
+      ><div slot="header">
+        已签到
+      </div>
+
+        <a-list-item slot="renderItem" slot-scope="item" style="align-items: center">
+          <a-list-item-meta style="align-items: center">
+            <a slot="title" style="line-height: 32px">{{ item.name }}</a>
+            <a-avatar
+                slot="avatar"
+
+            >{{item.name[0]}}</a-avatar>
+
+          </a-list-item-meta>
+          <span>{{item['ID']}}</span>
+<!--        <span>{{new Date(item['ckeckin']*1000).toLocaleTimeString()}}</span>-->
+        </a-list-item>
+      </a-list>
+
+    </a-card>
     <a-modal
         title="新建课程签到"
         :visible="show"
@@ -11,6 +101,7 @@
         @ok="nexts"
         okText="下一步"
         @cancel="handleCancel"
+        :maskClosable="false"
         :width="1200"
     >
       <a-steps :current="step-1">
@@ -66,23 +157,48 @@
         </a-row>
       </div>
       <div v-if="step===2">
-        <a-row type="flex" justify="space-between" style="align-content: center">
-          <a-col :span="16">
-            <div style="display: flex;flex-direction: column;align-content: center">
+        <a-row type="flex" justify="space-between" style="align-items: center">
+          <a-col :span="15">
+            <div style="display: flex;flex-direction: column;align-items: center">
               <span v-if="type==2" style="font-weight: bolder;font-size:6rem;">{{number}}</span>
               <qrcode-vue :value="qcode" :size="300" level="H"></qrcode-vue>
             </div>
           </a-col>
-          <a-col :span="6">
-            <a-progress type="circle" :percent="(members.length==0?members.length*100:0)/plist.length" :width="240">
+          <a-col :span="9" style="align-items: center;flex-direction: column;display: flex">
+            <a-progress type="circle" :percent="(members.length!=0?members.length*100:0)/plist.length" :width="240">
               <template #format="">
 
-                  <span style="font-size: 3rem;">{{ members.length==0?members.length:0 }}</span>
-                  <span style="font-size: 2rem;">/{{members.length}} </span>
+                  <span style="font-size: 3rem;">{{ members.length!=0?members.length:0 }}</span>
+                  <span style="font-size: 2rem;">/{{plist.length}} </span>
               </template>
             </a-progress>
-          </a-col>
+            <a-list bordered style="min-width: 400px;margin: 20px" size="small"
+                    class="demo-loadmore-list"
+                item-layout="horizontal"
+                :data-source="members" :pagination="{pageSize: 5,}"
+            ><div slot="header">
+              最近签到
+            </div>
+
+              <a-list-item slot="renderItem" slot-scope="item" style="align-items: center">
+                <a-list-item-meta style="align-items: center">
+                <a slot="title" style="line-height: 32px">{{ item.name }}</a>
+                <a-avatar
+                    slot="avatar"
+
+                >{{item.name[0]}}</a-avatar>
+
+                </a-list-item-meta>
+              <span>{{item['ID']}}</span> </a-list-item>
+            </a-list>          </a-col>
         </a-row>
+      </div>
+      <div v-if="this.step==3">
+        <a-table :columns="columns" :data-source="datas">
+          <span slot="action" slot-scope="record">
+            <a-button type="primary" @click="checkadd(record)">补签</a-button>
+          </span>
+        </a-table>
       </div>
     </a-modal>
   </div>
@@ -93,7 +209,21 @@ import QrcodeVue from 'qrcode.vue'
 export default {
 name: "checkin",data(){
   return{
-    show:false,step:1,type:1,confirmLoading:false,rcode:'',qcode:'',number:'',plist:[],members:[],timer:null
+    showd:false,show:false,step:1,type:1,confirmLoading:false,rcode:'',qcode:'',number:'',plist:[],members:[],timer:null,datas:[],checkedid:[],clist:[],currentcheck:{},
+    types:["扫码验证","签到码","人脸验证"],
+    columns:[{
+      title: '学号',
+      dataIndex: 'ID',
+      key: 'ID',
+    },{
+      title: '姓名',
+      dataIndex: 'name',
+      key: 'name',
+    },{
+      title: '操作',
+      key: 'action',
+      scopedSlots: { customRender: 'action' },
+    },]
   }
   },sockets: {
     connect: function () {
@@ -111,11 +241,31 @@ name: "checkin",data(){
     },codeerror:function (){
       this.$message.error('签到错误')
     },number:function (data){
+      this.checkedid.push(data['ID'])
       this.members.push(data)
     }
   }
 
-,methods:{
+,methods:{handleCancel(){
+      clearInterval(this.timer)
+      this.type=1
+      this.step=1
+      this.show=false
+    },checkadd(add){
+  this.$api.post("checkadd",{"code":this.rcode,"uid":add['ID']}).then(res=>{
+    if (res&&(res.response==undefined||res.response.status===200)&&res.data['code']==0){
+      this.checkedid.push(add['ID'])
+      this.datas=this.plist.filter(v=>{
+        return this.checkedid.includes(v.ID) ===false
+      })
+    }else {
+      this.$message.error('补签失败!');
+    }
+  })
+    },detail(item){
+this.showd=true
+this.currentcheck=item
+    },
   nexts(){
     if (this.step==1){
       this.$api.post("course/"+this.$route.params['id']+"/checkin",{"type":this.type}).then(
@@ -136,9 +286,38 @@ this.$socket.emit("facecode",{checkid:this.rcode,type:this.type,cid:this.$route.
           }
 
       )
+    }else if (this.step==2){
+      clearInterval(this.timer)
+
+      this.step=3
+      this.datas=this.plist.filter(v=>{
+       return this.checkedid.includes(v.ID) ===false
+      })
+    }else {
+      this.$api.get("course/"+this.$route.params['id']+"/sign").then(res=>{
+        if (res&&(res.response==undefined||res.response.status===200)&&res.data['code']==0){
+          let payl=res.data.data
+          this.clist=payl.reverse()
+
+        }else {
+          this.$message.error('签到列表获取失败!');
+        }
+
+      })
+      this.handleCancel()
     }
 
   }
+  },computed:{
+  checkedlists(){
+    return this.plist.filter(v=>{
+      return this.currentcheck.list.includes(v['ID'])
+    })
+  },ncheckedlists(){
+      return this.plist.filter(v=>{
+        return !this.currentcheck.list.includes(v['ID'])
+      })
+    },
   },mounted() {
     this.$socket.emit("checkin",{"cid":this.$route.params['id']})
     this.$api.get("course/"+this.$route.params['id']+"/plist").then(res=>{
@@ -149,6 +328,16 @@ this.$socket.emit("facecode",{checkid:this.rcode,type:this.type,cid:this.$route.
       }else {
         this.$message.error('课堂成员获取失败!');
       }
+    })
+    this.$api.get("course/"+this.$route.params['id']+"/sign").then(res=>{
+      if (res&&(res.response==undefined||res.response.status===200)&&res.data['code']==0){
+        let payl=res.data.data
+        this.clist=payl.reverse()
+
+      }else {
+        this.$message.error('签到列表获取失败!');
+      }
+
     })
 
   },

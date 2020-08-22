@@ -167,6 +167,7 @@ name: "course",
     // or 'mavon-editor': mavonEditor
   },methods:{handleOk(){
     this.confirmLoading=true
+      this.newwork['startat']=new Date().toLocaleString()
     this.$api.post("course/"+this.$route.params.id+"/homeworks",this.newwork).then(res=>{
       if (res&&(res.response==undefined||res.response.status===200)&&res.data['code']==0){
         this.newwork={title:'',owner:this.$store.state.info.name,content:'',ans:[],startat:'',tag:[]}
