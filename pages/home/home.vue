@@ -54,7 +54,7 @@
 			    </view>
 			  </view>
 			  
-			  <view class="cu-card">
+			<!--  <view class="cu-card">
 			    <view class="cu-item bg-img shadow-blur" style="background:linear-gradient(to right,rgba(85,85,85,.6),transparent),url('https://images.unsplash.com/photo-1596614780168-c192d7ea4077?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=976&q=80')" @click="toChild('/pages/class/class')"  wx:key>
 			      <view class="cardTitle">
 			       
@@ -79,7 +79,7 @@
 			  				    </view> </view>
 			    </view>
 			  </view>
-			  
+			  -->
 			<!-- 统计图 -->
 			<!-- <view class="ring animation-fade" v-if="ringList==''?false:true && swiperList==''?false:true">
 				<view class="cu-card article">

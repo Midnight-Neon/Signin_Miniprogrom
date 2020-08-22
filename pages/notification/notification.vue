@@ -31,7 +31,7 @@
 						  	</template>
 						  </tui-card>
 						  
-						  <tui-card  style="padding: 80rpx;padding-top: 80rpx;" :title="{text: '段永祥'}" :tag="{text: '1小时前'}" :header="{bgcolor: '#f9f9f9',line: true}">
+						<!--  <tui-card  style="padding: 80rpx;padding-top: 80rpx;" :title="{text: '段永祥'}" :tag="{text: '1小时前'}" :header="{bgcolor: '#f9f9f9',line: true}">
 						  							  <template v-slot:image>
 						  								  <view class="cu-avatar radius sm">
 						  									  段
@@ -68,7 +68,7 @@
 						  			</view>
 						  		
 						  	</template>
-						  </tui-card>
+						  </tui-card> -->
 						  
 						 <!-- </scroll-view> -->
 						  
@@ -131,13 +131,13 @@
 						x['content']=x['content'].replace(/#/g,"").replace(/\*/g,"").replace(/ /g,"").replace(/\n\n/g,"\n").substr(0,50)+"..."
 						
 					}
-					this.list=data
+					this.list=data.reverse()
 				})
 			}else{
 				this.$http.get("course/"+this.$store.getters.getcid).then(res=>{
 					let data=res.data.data['notifications'];
 					
-					this.list=data
+					this.list=data.reverse()
 				})
 			}
 		}

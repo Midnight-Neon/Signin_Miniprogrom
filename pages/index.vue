@@ -47,39 +47,48 @@
 		methods: {
 			NavChange: function(e) {
 				//底部菜单切换
+				let _this=this
 				if(e.currentTarget.dataset.cur=='ble'){
-					uni.navigateTo({
-						url:"/pA/camera/camera"
-					})
+					wx.scanCode({
+					  onlyFromCamera: true,scanType:["qrCode"],
+					  success (res) {
+					    console.log(res)
+						let info=JSON.parse(res['result'])
+						if(info['type']==1){
+							_this.$http.post("checkin",{"code":info.code,"uid":_this.$store.getters.getUserData['id'],"type":1,"name":_this.$store.getters.getUserData['name']}).then(res=>{
+								if(res.data.code==0){
+									uni.showToast({
+								icon:"success",
+										title:"签到成功"
+									})
+						}else{
+						
+								uni.showToast({
+							icon:"error",
+									title:"签到失败"
+								})
+						}})}
+						if(info['type']==2){
+							uni.navigateTo({
+								url:"/pages/password/password?code="+info['code']
+							})
+						}
+						if(info['type']==3){
+							uni.navigateTo({
+								url:"/pA/camera/camera?code="+info['code']+"&uid="+_this.$store.getters.getUserData['id']+"&name="+_this.$store.getters.getUserData['name']
+							})
+						}
+						
+					  
+					}})
 				}else{
 					this.PageCur = e.currentTarget.dataset.cur
 					
 				}
 			}
 		},
-		watch:{
-			//监听菜单变化
-			'PageCur': function(newVal){
-				
-				var _this=this
-				if(newVal=="ble"){
-					//如果切换的蓝牙 就把底部菜单设为最顶层 避免蓝牙处弹出提示不方便切换菜单
-					_this.isTop=true
-				}else{
-					_this.isTop=false
-				}
-				
-				//如果上一次切换的菜单是蓝牙，但是本次切换不是蓝牙，就关闭蓝牙搜索
-				if(newVal!="ble" && _this.toPageCur=="ble"){
-					uni.stopBluetoothDevicesDiscovery({
-					  success(res) {
-						console.log("关闭蓝牙搜索"+res)
-					  }
-					})
-				}
-				_this.toPageCur=newVal //赋值上一次切换的菜单
-			},
-		}
+	
+		
 	}
 </script>
 

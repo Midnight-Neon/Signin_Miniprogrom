@@ -58,7 +58,7 @@ http.interceptor.request((config, cancel) => { /* 请求之前拦截器 */
 http.interceptor.response(async (response) => { /* 请求之后拦截器 */
 	uni.hideToast();//关闭加载动画
 	console.log("请求后拦截")
-	if(!response.config.url.includes("login")&&response&&response.data.code!=0){
+	if(!response.config.url.includes("login")&&!response.config.url.includes("checkin")&&response&&response.data.code!=0){
 		uni.showToast({
 			icon: 'error',
 			title: '网络错误'

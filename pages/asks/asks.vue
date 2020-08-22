@@ -40,7 +40,7 @@
 					</view>
 					</tui-list-cell></view>
 					
-					<view class="news-item">
+				<!-- 	<view class="news-item">
 					<tui-list-cell :unlined="true"  :radius='true' >
 						<view class="tui-news-flex tui-flex-column">
 							<view class="tui-news-tbox tui-flex-column tui-flex-between tui-h165 tui-pl-20" >
@@ -53,39 +53,16 @@
 									<view style="display: flex;align-items: center;justify-content:flex-start;vertical-align: baseline;">
 										<view class="cu-avatar radius text-xs sm tui-scale" >李</view> 李翔
 									</view>
-									<!-- <view class="tui-sub-source">{{item.source}}</view> -->
 									<view class="tui-sub-cmt">
 										<view>1 回复</view>
 										
-											<!-- <tui-tag padding="10rpx 24rpx"  :plain="true" shape="circleRight" >老师回复</tui-tag> -->
 									</view>
 								</view>
 							</view>
 						</view>
-						</tui-list-cell></view>
+						</tui-list-cell></view> -->
 						
-						<view class="news-item">
-						<tui-list-cell :unlined="true"  :radius='true' >
-							<view class="tui-news-flex tui-flex-column">
-								<view class="tui-news-tbox tui-flex-column tui-flex-between tui-h165 tui-pl-20" >
-									<view class="tui-news-title" >集合是否算作一种数据结构?</view>
-									<text class="text-cut-2">
-										集合是指具有某种特定性质的具体的或抽象的对象汇总而成的集体。其中，构成集合的这些对象则称为该集合的元素
-									</text>
-									<view class="tui-sub-box">
-										<view style="display: flex;align-items: center;justify-content:flex-start;vertical-align: baseline;">
-											<view class="cu-avatar radius text-xs sm tui-scale" >李</view> 李翔
-										</view>
-										<!-- <view class="tui-sub-source">{{item.source}}</view> -->
-										<view class="tui-sub-cmt">
-											<view>1 回复</view>
-											
-												<!-- <tui-tag padding="10rpx 24rpx"  :plain="true" shape="circleRight" >老师回复</tui-tag> -->
-										</view>
-									</view>
-								</view>
-							</view>
-							</tui-list-cell></view>
+						
 				
 			</view>
 		</view>

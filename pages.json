@@ -55,6 +55,12 @@
             "style": {}
         }
         
+        ,{
+            "path" : "pages/password/password",
+            "style" : {
+				"navigationStyle":"default"
+			}
+        }
     ],"subPackages":[{
 		"root":"pA","pages":[{
 			"path":"camera/camera"
@@ -69,7 +75,7 @@
 	},
     "globalStyle": {
         "navigationBarTextStyle": "black",
-        "navigationBarTitleText": "运动",
+        "navigationBarTitleText": "",
         "navigationBarBackgroundColor": "#F8F8F8",
         "backgroundColor": "#F8F8F8",
         "navigationStyle": "custom"
