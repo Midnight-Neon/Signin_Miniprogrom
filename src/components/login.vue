@@ -189,12 +189,13 @@
 </template>
 
 <script>
-    // import md5 from 'md5'
+    import md5 from 'md5'
     // import {mapActions} from 'vuex'
     // import {mapState} from 'vuex'
 
     // eslint-disable-next-line no-unused-vars
     // import {notice} from "../js/notice";
+
 
     export default {
         components: {},
@@ -277,7 +278,7 @@
                 app.loginBtn = true;//todo:登陆函数标志
                 if (app.islogin) {
                     this.$api.post('login', {
-                        ID: app.formLogin.account, PassWd: app.formLogin.password
+                        ID: app.formLogin.account, PassWd: md5(app.formLogin.password)
                     }).then((data) => {
                         this.loginBtn = false
                         if (data.data.code == -1) {

@@ -48,7 +48,7 @@
             <p>{{ item.startat }}</p>
           </div>
           <div class="list-content-item">
-            <a-progress :percent="(item.readnum/datas.pnum)*100" :status="item.readnum==datas.pnum?'success':''" style="width: 180px" />
+            <a-progress :percent="(item.readnum/datas.pnum)*100" :status="item.readnum==datas.pnum?'success':''" :format="(percent) => percent.toFixed(2)+'%'" style="width: 180px" />
           </div>
         </div>
       </a-list-item>

@@ -250,6 +250,7 @@ name: "checkin",data(){
       clearInterval(this.timer)
       this.type=1
       this.step=1
+      this.members=[]
       this.show=false
     },checkadd(add){
   this.$api.post("checkadd",{"code":this.rcode,"uid":add['ID']}).then(res=>{

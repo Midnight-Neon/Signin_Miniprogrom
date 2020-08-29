@@ -15,9 +15,9 @@
               <a-menu-item >
                 <center><p><b>{{this.$store.state.info.name}}</b></p></center>
 
-                <p><b>角色:</b>{{this.$store.state.info.role==-1?'教师':'学生'}}</p>
+                <p v-if="$store.state.info.role!=-2"><b>角色:</b>{{this.$store.state.info.role==-1?'教师':'学生'}}</p>
 
-                <p><b>组别:</b>{{this.$store.state.info.group?this.$store.state.info.group:this.$store.state.info.department}}</p>
+                <p v-if="$store.state.info.role!=-2"><b>组别:</b>{{this.$store.state.info.group?this.$store.state.info.group:this.$store.state.info.department}}</p>
               </a-menu-item>
               <a-menu-divider />
 
@@ -46,10 +46,16 @@ export default {
   components: {
 
   },created:function () {
+    this.$AV.init({
+      appId: "aeOmDTmS3ffFp58lwSdbf4qs-9Nh9j0Va",
+      appKey: "PPJz63PgkRHxILOfSnCtRon9",
+      serverURL: "https://aeomdtms.lc-cn-e1-shared.com"
+    })
     localStorage.getItem("userMsg") && this.$store.replaceState(Object.assign(this.$store.state,JSON.parse(localStorage.getItem("userMsg"))));
     window.addEventListener("beforeunload",()=>{
       localStorage.setItem("userMsg",JSON.stringify(this.$store.state))
     })
+
 
 
 

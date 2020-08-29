@@ -52,6 +52,9 @@
       </a-statistic>
     </a-row>
     <a-menu mode="horizontal" slot="footer" style="background-color: transparent" >
+      <a-menu-item key="chart" @click="$router.push('/course/'+$route.params.id)">
+        <a-icon type="bar-chart" />        总览
+      </a-menu-item>
       <a-menu-item key="sign" @click="$router.push('/course/'+$route.params.id+'/check')">
         <a-icon type="clock-circle" />
         签到
@@ -64,11 +67,11 @@
         <a-icon type="notification" />
         通知
       </a-menu-item>
-      <a-menu-item key="bug" @click="$router.push('/course/'+$route.params.id+'/bug')">
-        <a-icon type="bars" />
-        问答
-      </a-menu-item>
-      <a-menu-item key="wiki" @click="$router.push('/course/'+$route.params.id+'/wiki')">
+<!--      <a-menu-item key="bug" @click="$router.push('/course/'+$route.params.id+'/bug')">-->
+<!--        <a-icon type="bars" />-->
+<!--        问答-->
+<!--      </a-menu-item>-->
+      <a-menu-item key="wiki" @click="$router.push('/course/'+$route.params.id+'/files')">
         <a-icon type="file-text"/>
         资源
       </a-menu-item>

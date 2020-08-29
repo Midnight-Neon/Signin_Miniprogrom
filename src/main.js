@@ -16,6 +16,9 @@ import VueSocketIO from 'vue-socket.io'
 import * as hljs from "highlight.js";
 import store from "@/store";
 import router from "@/router";
+const AV = require('leancloud-storage');
+Vue.prototype.$AV = AV
+
 Vue.use(new VueSocketIO({
   debug: true,
   connection: 'http://localhost:5000/',

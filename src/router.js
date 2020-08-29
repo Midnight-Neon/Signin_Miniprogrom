@@ -12,6 +12,10 @@ const routes = [
             title: '课程详情'
         },children: [
             {
+                path:'',
+                component:()=>import('@/components/chart'),name:'chart'
+
+            },{
                 path:'notify',
                 component:()=>import('@/components/notify'),name:'notify'
 
@@ -22,6 +26,10 @@ const routes = [
             },{
                 path:'check',
                 component:()=>import('@/components/checkin'),name:'check'
+
+            },{
+                path:'files',
+                component:()=>import('@/components/netdisk'),name:'files'
 
             }
         ] },
