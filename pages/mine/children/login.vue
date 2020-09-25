@@ -2,12 +2,11 @@
 	<view class="login">
 		<image src="/static/images/login/bg_login.png" class="tui-bg-img" style="position: fixed;top: 0;z-index: -1;width: 100%;"></image>
 		<view class="content">
-			<!-- 头部logo -->
 			
 			<view class="header">
 				<image :src="logoImage"></image>
 			</view>
-			<!-- 主体表单 -->
+			
 			<view class="main">
 				<wInput
 					v-model="phoneData"
@@ -30,22 +29,9 @@
 				class="wbutton "
 			></wButton>
 			
-			<!-- 其他登录 -->
-			<!-- <view class="other_login cuIcon">
-				<view class="login_icon">
-					<view class="cuIcon-weixin" @tap="login_weixin"></view>
-				</view>
-				<view class="login_icon">
-					<view class="cuIcon-weibo" @tap="login_weibo"></view>
-				</view>
-				<view class="login_icon">
-					<view class="cuIcon-github" @tap="login_github"></view>
-				</view>
-			</view> -->
-
-			<!-- 底部信息 -->
+			
 			<view class="footer">
-				<!-- <navigator url="forget" open-type="navigate">找回密码</navigator> -->
+				
 				
 			</view>
 			
@@ -57,11 +43,8 @@
 	var _this;
 	import wInput from '../../../components/watch-login/watch-input.vue'; //输入框
 	import wButton from '../../../components/watch-login/watch-button.vue'; //按钮
-	// import {
-	// 	getLogin,
-	// 	wexinLogin,
-	// } from '../../../service/api/login.js' //登录api
-	
+	import md5 from 'js_sdk/md5.js'
+
 	export default {
 		data() {
 			return {
@@ -101,6 +84,7 @@
 			},
 		    startLogin(){
 				//登录
+				// console.log(md5.md5())
 				
 				if(this.isRotate){
 					//判断是否加载中，避免重复点击请求
@@ -130,8 +114,16 @@
 				
 				//这里加了个延时，主要是为了让登录动画完整显示出来， 不需要可以删除
 				setTimeout(function(){
-					_this.$http.post('login',{ID:_this.phoneData,PassWd:_this.passData}).then((res)=>{
+					_this.$http.post('login',{ID:_this.phoneData,PassWd:md5.md5(_this.passData)}).then((res)=>{
 						if(res.data.code==0){
+							if(res.data.data.role==-2){
+								uni.showToast({
+									icon: 'none',
+									title: '账号不允许在小程序登陆'
+								});
+								_this.isRotate=false
+								return
+							}
 							let userdata={
 								"id":res.data.data.ID,
 								"name":res.data.data.name,
@@ -164,70 +156,16 @@
 							});
 						}
 						uni.hideLoading();
+					}).catch(()=>{
+						_this.isRotate=false
 					})
 						
 						
-					},2000)
+					},500)
 				
 				
 		    },
-			login_weixin() {
-				//微信登录（没有服务器 测试不了，就做到这一步没了哈哈哈哈）
-				// #ifdef MP-WEIXIN
-				uni.showToast({
-					icon: 'none',
-					position: 'bottom',
-					title: '无服务器进行测试...'
-				});
-				// const appid=''; //小程序id
-				// const secret=''; //小程序 appSecret
-				// 
-				// let jscode=''; //登录时获取的 code
-				// wx.login({
-				// 	success (res) {
-				// 		if (res.code) {
-				// 			console.log(res.code);
-				// 			jscode = res.code;
-				// 			//微信登录
-				// 			wexinLogin(appid,secret,jscode)
-				// 			.then(res => {
-				// 				console.log(res)
-				// 			}).catch(err => {
-				// 				console.log(err)
-				// 				
-				// 			})
-				// 			
-				// 		} else {
-				// 		  console.log('登录失败！' + res.errMsg)
-				// 		}
-				// 	}
-				// })
-				
-				// #endif
-				// #ifndef MP-WEIXIN
-					uni.showToast({
-						icon: 'none',
-						position: 'bottom',
-						title: '...'
-					});
-				// #endif
-			},
-			login_weibo() {
-				//微博登录
-				uni.showToast({
-					icon: 'none',
-					position: 'bottom',
-					title: '...'
-				});
-			},
-			login_github() {
-				//github登录
-				uni.showToast({
-					icon: 'none',
-					position: 'bottom',
-					title: '...'
-				});
-			}
+			
 			
 		}
 	}

@@ -61,6 +61,10 @@
 				"navigationStyle":"default"
 			}
         }
+        ,{
+            "path" : "pages/checkin/checkin",
+            "style" : {}
+        }
     ],"subPackages":[{
 		"root":"pA","pages":[{
 			"path":"camera/camera"

@@ -19,7 +19,7 @@
 			<tui-icon name="link" :size="22"></tui-icon> -->
 		</view>
 		<view class="tui-cmt-btn">
-			<button class="cu-btn bg-red margin-tb-sm lg" style="width: 90vw;" @click="submit">发表</button>
+			<button class="cu-btn bg-red margin-tb-sm lg" style="width: 90vw;" @click="submit" :disabled="newask['content'].length==0">发表</button>
 			<!-- <tui-button shape="circle"></tui-button> -->
 		</view>
 	</view></view>

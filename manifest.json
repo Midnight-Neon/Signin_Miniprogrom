@@ -1,5 +1,5 @@
 {
-    "name" : "运动手表演示",
+    "name" : "签到系统",
     "appid" : "__UNI__98CA8AF",
     "description" : "",
     "versionName" : "1.0.6",
@@ -95,7 +95,7 @@
     "quickapp" : {},
     /* 快应用特有相关 */
     "mp-weixin" : {
-        "appid" : "wx1f04fdb44dd778f1",
+        "appid" : "wx6de0fccadbfe1a16",
         "setting" : {
             "urlCheck" : false,
             "minified" : true,

@@ -49,6 +49,13 @@
 				//底部菜单切换
 				let _this=this
 				if(e.currentTarget.dataset.cur=='ble'){
+					if(this.$store.getters.getUserData['id']==-1){
+						uni.showToast({
+							icon:"error",
+							title:"教师无需签到"
+						})
+						return
+					}
 					wx.scanCode({
 					  onlyFromCamera: true,scanType:["qrCode"],
 					  success (res) {

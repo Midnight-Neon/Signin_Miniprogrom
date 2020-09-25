@@ -9,7 +9,7 @@
 		<view class="logo flexlogo" @click="goLogin" :hover-class="!login ? 'logo-hover' : ''">
 			<image class="logo-img" :src="login ? avatarUrl :avatarUrl"></image>
 			<view class="logo-title flexlogo">
-				<text class="uer-name ">Hi，{{login ? uerInfo.nickname : '您未登录'}}</text>
+				<text class="uer-name ">Hi，{{uerInfo['name'] ? uerInfo['name'] : '您未登录'}}</text>
 				<text class="go-login navigat-arrow" v-if="!login">
 					<text class="cuIcon-right"></text>
 				</text>
@@ -17,7 +17,7 @@
 		</view>
 		
 		<view class="cu-list menu sm-border card-menu margin-top bar-shadown">
-			<view class="cu-item arrow" >
+		<!-- 	<view class="cu-item arrow" >
 				<view class="content">
 					<text class="cuIcon-roundadd text-grey"></text>
 					<text class="text-grey">设备</text>
@@ -28,7 +28,7 @@
 					<text class="cuIcon-copy text-grey"></text>
 					<text class="text-grey">修改密码</text>
 				</view>
-			</view>
+			</view> -->
 			
 			<!-- #ifdef APP-PLUS -->
 			<view class="cu-item arrow" @tap="getVersionData">
@@ -43,19 +43,19 @@
 			</view>
 			<!-- #endif -->
 			
-			<view class="cu-item arrow" >
+			<!-- <view class="cu-item arrow" >
 				<view class="content">
 					<text class="cuIcon-info text-grey"></text>
 					<text class="text-grey">关于</text>
 				</view>
-			</view>
+			</view> -->
 			
 			<view class="cu-item" >
 				<view class="content">
 					<button class="cu-btn round bg-red shadow" @tap="loginOut">
 						退出登录
 					</button>
-				</view>
+				</view> 
 					
 			</view>
 			

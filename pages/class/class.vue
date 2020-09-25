@@ -2,7 +2,7 @@
 	<view>
 		<cu-custom bgColor="bg-gradual-pink" :isBack="true">
 				    <view slot="backText">返回</view>
-				    <view slot="content">{{classdata.title}}</view>
+				    <view slot="content" style="justify-content: center;justify-self: center;justify-items: center;"><text style="text-align: center;">{{classdata.title}}</text></view>
 				  </cu-custom>
 <!-- <scroll-view :scroll-y="true" class="page show" style="height: 100vh;">	 -->
 	 <view class="page show" >
@@ -26,7 +26,7 @@
 		  </view>
 		  <view class="nav-list">
 		  	<navigator hover-class="none"  class="nav-li" navigateTo :class="'bg-'+item.color"
-		  	 :style="[{animation: 'show ' + ((index+1)*0.2+1) + 's 1'}]" v-for="(item,index) in elements" :key="index">
+		  	 :style="[{animation: 'show ' + ((index+1)*0.2+1) + 's 1'}]" v-for="(item,index) in elements" :key="index" :url="item.url?item.url:''">
 		  		<view class="nav-title"><view class="nav-title-first-letter">{{item.num}}</view>条</view>
 		  		<view class="nav-name"><view class="nav-name-action">{{item.action==''?'新':item.action}}</view>{{item.name}}</view>
 		  		<text :class="'cuIcon-' + item.cuIcon"></text>
@@ -36,7 +36,8 @@
 		    <view class="cu-item" v-for="(item,index) in  iconList" @tap="toChild(item)">
 		      <view :class="['cuIcon-'+item.icon,'text-'+item.color]">
 		        <view class="cu-tag badge" v-if="item.badge!=0">
-		          <block :if="item.badge!=1">{{item.badge>99?"99+":item.badge}}</block>
+		          <block v-if="item.badge!=1">{{item.badge>99?"99+":item.badge}}</block>
+				  
 		        </view>
 		      </view>
 		      <text>{{item.name}}</text>
@@ -109,15 +110,50 @@
 	export default {
 		data() {
 			return {elements: [],
-				 iconList: [{
+				 iconList: [],modalName:null,cid:'',classdata:{}
+			}
+		},
+		methods: {
+			  toChild(e){
+				  console.log('xxxx',e)
+				 let  url=e['url']
+			  	uni.navigateTo({url:url})
+			  }
+		},onShow() {
+			console.log(this.$store.getters.getUserData['role'])
+			if(this.$store.getters.getUserData['role']==-1){
+				this.iconList=[{
+				      icon: 'noticefill',
+				      color: 'olive',
+				      badge: 1,
+				      name: '信息',url:'/pages/messages/messages'
+				    }, {
+				      icon: 'friendfill',
+				      color: 'cyan',
+				      badge: 0,
+				      name: '班级成员',url:'/pages/class/classmates/classmates'
+				    },  {
+				      icon: 'discoverfill',
+				      color: 'purple',
+				      badge: 0,
+				      name: '资源',url:'/pages/netdisk/netdisk'
+				    }, {
+				      icon: 'commandfill',
+				      color: 'purple',
+				      badge: 0,
+				      name: '问答',url:'/pages/asks/asks'
+				    }]
+					
+			}else{
+			this.iconList=[{
 				      icon: 'timefill',
 				      color: 'red',
-				      badge: 1,
-				      name: '签到'
+				      badge: 0,
+				      name: '签到',url:'/pages/checkin/checkin'
 				    },{
 				      icon: 'noticefill',
 				      color: 'olive',
-				      badge: 22,
+				      badge: 0,
 				      name: '信息',url:'/pages/messages/messages'
 				    }, {
 				      icon: 'friendfill',
@@ -139,28 +175,23 @@
       color: 'mauve',
       badge: 0,
       name: '作业',url:'/pages/notification/notification?type=homework'
-    }],modalName:null,cid:'',classdata:{}
-			}
-		},
-		methods: {
-			  toChild(e){
-				  console.log('xxxx',e)
-				 let  url=e['url']
-			  	uni.navigateTo({url:url})
-			  }
-		},onShow() {
+    }]
 			this.iconList[5]['badge']=0
-			this.iconList[4]['badge']=0
+			this.iconList[4]['badge']=0	
+			}
+			
 			this.$http.get("course/"+this.cid).then(res=>{
 				this.classdata=res.data.data
 				console.log(this.classdata)
+				if(this.$store.getters.getUserData['role']!=-1){
 				this.elements=[]
+				
 				if(this.classdata['homework_undone']!=0){
 					this.iconList[5]['badge']=this.iconList[5]['badge']+this.classdata['homework_undone']
 					this.elements.push({
 				name: '作业',
 						color: 'blue',
-						cuIcon: 'formfill',num:this.classdata['homework_undone'],action:'待完成'
+						cuIcon: 'formfill',num:this.classdata['homework_undone'],action:'待完成',url:'/pages/notification/notification?type=homework'
 					})
 				}
 				if(this.classdata['homeworkreply'].length!=0){
@@ -168,7 +199,7 @@
 					this.elements.push({
 				name: '作业',
 						color: 'cyan',
-						cuIcon: 'formfill',num:this.classdata['homeworkreply'].length,action:'被批改'
+						cuIcon: 'formfill',num:this.classdata['homeworkreply'].length,action:'被批改',url:'/pages/notification/notification?type=homework'
 					})
 				}
 				if(this.classdata['askreply'].length>0){
@@ -177,18 +208,19 @@
 						
 						name: '问答',
 						color: 'pink',
-						cuIcon: 'commandfill',num:this.classdata['askreply'].length,action:'被回复',
+						cuIcon: 'commandfill',num:this.classdata['askreply'].length,action:'被回复',url:'/pages/asks/asks'
 					})
 				}
 				if((this.classdata['notifications'].length-this.classdata['notifications_done'].length)>0){
 					this.classdata['notify_unnum']=this.classdata['notifications'].length-this.classdata['notifications_done'].length
+					this.iconList[1].badge=this.classdata['notify_unnum']
 					this.elements.push({
 						
 						name: '通知',
 						color: 'purple',
-						cuIcon: 'messagefill',num:this.classdata['notifications'].length-this.classdata['notifications_done'].length,action:'未读'
+						cuIcon: 'messagefill',num:this.classdata['notifications'].length-this.classdata['notifications_done'].length,action:'未读',url:'/pages/notification/notification?type=notifications'
 					})
-				}
+				}}
 			})
 		},onLoad:function(op){
 			console.log(op)

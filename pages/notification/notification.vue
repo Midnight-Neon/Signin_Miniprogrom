@@ -2,11 +2,12 @@
 	<view>
 				<cu-custom bgColor="bg-gradual-pink" :isBack="true">
 						    <view slot="backText">返回</view>
-						    <view slot="content">通知</view>
+						    <view slot="content">{{type==1?'作业':'通知'}}</view>
 						  </cu-custom>
 						  
 						  <!-- <scroll-view :scroll-y="true" class="page show"  > -->	
-						  <tui-card v-for="item in list" style="padding: 80rpx;padding-bottom: 80rpx;" :title="{text: item.owner}" :tag="{text: item.startat}" :header="{bgcolor: '#f9f9f9',line: true}" @click="toChild"  :data-url="item['_id']">
+						  <block v-if="list.length>0">
+						  <tui-card  v-for="item in list" style="padding: 80rpx;padding-bottom: 80rpx;" :title="{text: item.owner}" :tag="{text: item.startat}" :header="{bgcolor: '#f9f9f9',line: true}" @click="toChild"  :data-url="item['_id']">
 							  <template v-slot:image>
 								  <view class="cu-avatar radius sm">
 									  {{item.owner[0]}}
@@ -30,7 +31,15 @@
 						  		
 						  	</template>
 						  </tui-card>
-						  
+						  </block>
+						  <view v-else style="display: flex;flex-direction: column;align-items: center;justify-content: center;height: 90vh;">
+							  <view style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
+								 <image src="../../static/images/empty.png" style="width: 128px;height: 100px;margin-bottom: 20px;margin-top: 10px;"/>
+								 <text style="font-weight: bold;color: grey;">暂无{{type==1?'作业':'通知'}}</text>
+								 
+							  </view>
+							  
+						  </view>
 						<!--  <tui-card  style="padding: 80rpx;padding-top: 80rpx;" :title="{text: '段永祥'}" :tag="{text: '1小时前'}" :header="{bgcolor: '#f9f9f9',line: true}">
 						  							  <template v-slot:image>
 						  								  <view class="cu-avatar radius sm">

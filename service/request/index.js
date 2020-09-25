@@ -8,7 +8,7 @@ http.setConfig((config) => { /* 设置全局配置 */
 	
 	//#ifdef MP-WEIXIN
 	//由于微信小程序接口地址需要认证，这里还是采用原easymock地址
-	config.baseUrl = 'http://192.168.124.238:5000/'; //默认请求地址
+	config.baseUrl = 'https://app.iscy.club/api/'; //默认请求地址
 	//#endif
 	
 	

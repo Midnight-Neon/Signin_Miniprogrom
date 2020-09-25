@@ -27,7 +27,7 @@
 				</swiper-item>
 			</swiper> -->
 			
-	
+	<block  v-if="classlist.length>0">
 			  <view class="cu-card" :style="[{animation: 'show 0.2s 1'}]" v-for="item in classlist">
 			    <view class="cu-item bg-img shadow-blur" style="background:linear-gradient(to right,rgba(85,85,85,.6),transparent),url('https://image.weilanwl.com/color2.0/plugin/sylb2244.jpg')" @click="toChild('/pages/class/class?cid='+item['_id'])"  wx:key data-url="/pages/class/class" >
 			      <view class="cardTitle">
@@ -53,7 +53,15 @@
 				    </view></view>
 			    </view>
 			  </view>
-			  
+			  </block>
+			  <view v-else style="display: flex;flex-direction: column;align-items: center;justify-content: center;height: 60vh;">
+							  <view style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
+								 <image src="../../static/images/empty.png" style="width: 128px;height: 100px;margin-bottom: 20px;margin-top: 10px;"/>
+								 <text style="font-weight: bold;color: grey;">暂无课程</text>
+								 
+							  </view>
+							  
+						  </view>
 			<!--  <view class="cu-card">
 			    <view class="cu-item bg-img shadow-blur" style="background:linear-gradient(to right,rgba(85,85,85,.6),transparent),url('https://images.unsplash.com/photo-1596614780168-c192d7ea4077?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=976&q=80')" @click="toChild('/pages/class/class')"  wx:key>
 			      <view class="cardTitle">
@@ -159,16 +167,7 @@
 			})
 		},
 			
-			copyUrl() {
-				uni.setClipboardData({
-					data: 'https://github.com/AmosHuKe/Watch-Test',
-					success: function () {
-						uni.showToast({
-							title: '地址复制成功'
-						})
-					}
-				});
-			},
+		
 			
 		}
 	}

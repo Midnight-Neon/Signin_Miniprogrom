@@ -6,7 +6,7 @@
 										  </cu-custom>
 							
 	 <tui-fab  :bottom="100"  :btnList="list" @click="onClick" v-if="showActionSheet==false"></tui-fab>
-										  <view class="cu-list menu sm-border margin-top">
+										  <view class="cu-list menu sm-border margin-top" v-if="filelist.length>0">
 											  <view class="cu-item" v-for="item in filelist">
 											  	<view class="content" style="display: flex;align-items: center;justify-content: flex-start;">
 													<!-- <text class="iconfont icon-video " style="font-size: 70rpx;color: #8095ff;" v-if="item.filename.includes('.mp4')||item.filename.includes('.rm')||item.filename.includes('.wmv')"></text>
@@ -20,7 +20,7 @@
 													<image :src="'../../static/images/files/'+gettypeicon(item)+'.png'" style="height: 64rpx;width: 64rpx;"></image>
 													<view style="display: flex;flex-direction: column;">
 											  		<text class="text-black text-bold " style="margin-left: 30rpx;line-height: 1em;font-size: 36rpx;">{{item.name.length>20?item.name.substr(0,20)+'...':item.name}}</text>
-													<text class="text-gray text-sm" style="margin-left: 30rpx;line-height: 1em;margin-top: 3rpx;">{{item.createon}} {{item.owner}}</text>
+													<text class="text-gray text-sm" style="margin-left: 30rpx;line-height: 1em;margin-top: 3rpx;">{{new Date(item.createon).toLocaleDateString()}} {{item.owner}}</text>
 													</view>
 													<view @click="showde(item)"><text class="cuIcon-more text-grey"  style="font-size: 40rpx;position: absolute;;right: 20rpx;" @click="showde(item)"></text></view>
 													
@@ -40,7 +40,15 @@
 											  	</view>
 											  </view> -->
 										  </view> 
-										  <tui-actionsheet :show="showActionSheet" :tips="currentfile.name" :item-list="[{text:'预览'},{text:'复制链接'},{text:'删除',color:'red'}]" :mask-closable="true" :color="'black'"
+										  <view v-else style="display: flex;flex-direction: column;align-items: center;justify-content: center;height: 90vh;">
+										  							  <view style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
+										  								 <image src="../../static/images/empty.png" style="width: 128px;height: 100px;margin-bottom: 20px;margin-top: 10px;"/>
+										  								 <text style="font-weight: bold;color: grey;">暂无文件,点击 + 号上传</text>
+										  								 
+										  							  </view>
+										  							  
+										  </view>
+										  <tui-actionsheet :show="showActionSheet" :tips="currentfile.name" :item-list="actions" :mask-closable="true" :color="'black'"
 										    @click="itemClick($event)" @cancel='showActionSheet=false'></tui-actionsheet>
 	</view>
 </template>
@@ -49,7 +57,7 @@
 	export default {
 		data() {
 			return {
-				showActionSheet:false,cid:'',obj:null,currentfile:{},
+				showActionSheet:false,cid:'',obj:null,currentfile:{},actions:[{text:'预览'},{text:'复制链接'}],
 				filelist:[
 					
 				],list: [{
@@ -80,9 +88,11 @@
 					fontSize: 34,
 					//字体颜色
 					color: "#fff"
-				}],
-			}
+				}]	}
 		},onShow() {
+			uni.showToast({
+				icon:"loading"
+			});//加载中动画
 			this.cid=this.$store.getters.getcid
 		let AV=this.$AV
 			const query=new AV.Query('files')
@@ -98,6 +108,7 @@
 			                    this.obj.set('cid', this.cid)
 			                    this.obj.save()
 			                }
+							uni.hideLoading();
 		})},
 		methods: {
 			gettypeicon(item){
@@ -213,7 +224,7 @@
 		                        name: filename,
 		                        owner: _this.$store.getters.getUserData['name'],
 		                        url: url,
-		                        createon: new Date().toLocaleString(),
+		                        createon: Date().now(),
 		                        size: '',pic:true
 		                    }
 							_this.obj.add('list', datas)
